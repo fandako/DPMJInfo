@@ -18,6 +18,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.Feature;
@@ -50,6 +52,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.TextSymbol;
 import com.example.dpmjinfo.debug.BusStopDetail;
+import com.example.dpmjinfo.debug.MapKey;
 import com.example.dpmjinfo.debug.MapObjectSelection;
 import com.example.dpmjinfo.debug.VehicleDetail;
 
@@ -221,6 +224,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageButton infoButton = findViewById(R.id.mapKey);
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MapKey.class);
+                startActivity(intent);
+            }
+        });
+
         updateVehicles = false;
 
         mHandler = new Handler();

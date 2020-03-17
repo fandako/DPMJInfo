@@ -19,26 +19,31 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".debug.MapKey">
+            <!-- EMPTY -->
+        </activity>
         <activity android:name=".debug.VehicleDetail">
             <!-- EMPTY -->
         </activity>
-        <activity
-            android:name=".debug.MapObjectSelection"
-        >
-            <!--android:parentActivityName=".MainActivity"-->
-        <!-- The meta-data tag is required if you support API level 15 and lower -->
-        <!--<meta-data
+        <activity android:name=".debug.MapObjectSelection">
+
+            <!-- android:parentActivityName=".MainActivity" -->
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <!--
+            <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value=".MainActivity" />-->
-    </activity>
-    <activity
-        android:name=".debug.BusStopDetail"
->
-        <!--android:parentActivityName=".debug.MapObjectSelection"-->
-    <!-- The meta-data tag is required if you support API level 15 and lower -->
-    <!--<meta-data
+            android:value=".MainActivity" />
+            -->
+        </activity>
+        <activity android:name=".debug.BusStopDetail">
+
+            <!-- android:parentActivityName=".debug.MapObjectSelection" -->
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <!--
+       <meta-data
        android:name="android.support.PARENT_ACTIVITY"
-       android:value=".debug.MapObjectSelection" />-->
+       android:value=".debug.MapObjectSelection" />
+            -->
         </activity>
         <activity
             android:name=".MainActivity"

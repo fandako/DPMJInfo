@@ -28,7 +28,9 @@ public class BusStopDetail extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter busStopDepartureAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private TextView textView;
+    private TextView name;
+    private TextView lines;
+    private TextView wheelchairAccessible;
     private List departureList = new ArrayList<>();
 
     @Override
@@ -36,16 +38,21 @@ public class BusStopDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_stop_detail);
 
+        getSupportActionBar().setTitle("Detail zastávky");
+
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
-        BusStop message = (BusStop) bundle.getSerializable("com.android.dpmjinfo.busStop");
+        BusStop busStop = (BusStop) bundle.getSerializable("com.android.dpmjinfo.busStop");
 
-        getSupportActionBar().setTitle(message.getName());
-        // Capture the layout's TextView and set the string as its text
-        textView = findViewById(R.id.textView);
-        textView.setText(message.getLines());
+        name = findViewById(R.id.name);
+        lines = findViewById(R.id.lines);
+        wheelchairAccessible = findViewById(R.id.wheelchairAccessible);
+
+        name.setText(busStop.getName());
+        lines.setText(busStop.getLines());
+        wheelchairAccessible.setText(busStop.getWheelchairAccessible());
 
         recyclerView = findViewById(R.id.recyclerView);
         // use this setting to improve performance if you know that changes
@@ -61,7 +68,7 @@ public class BusStopDetail extends AppCompatActivity {
         busStopDepartureAdapter = new BusStopDeparturesAdapter(departureList);
         recyclerView.setAdapter(busStopDepartureAdapter);
 
-        getDeparturesFromWeb(message.getElp_id());
+        getDeparturesFromWeb(/*message.getElp_id()*/busStop);
     }
 
     void updateDepartures(List<BusStopDeparture> departures){
@@ -71,7 +78,7 @@ public class BusStopDetail extends AppCompatActivity {
         busStopDepartureAdapter.notifyDataSetChanged();
     }
 
-    void getDeparturesFromWeb(Short stopID){
+    void getDeparturesFromWeb(/*Short stopID*/BusStop busStop){
         new Thread(new Runnable() {
             private List<BusStopDeparture> departures = new ArrayList<>();
 
@@ -79,7 +86,7 @@ public class BusStopDetail extends AppCompatActivity {
             public void run() {
                 final StringBuilder builder = new StringBuilder();
 
-                String url = "http://elp.dpmj.cz/ElpDepartures/Home/Departures?stop=" + stopID;
+                String url = /*"http://elp.dpmj.cz/ElpDepartures/Home/Departures?stop=" + stopID*/busStop.getHref();
 
                 try {
                     Document doc = Jsoup.connect(url).get();

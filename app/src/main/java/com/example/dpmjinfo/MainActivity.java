@@ -422,10 +422,10 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     startRepeatingTask();
 
-                    for (Field field:serviceFeatureTable2.getFields()
+                    /*for (Field field:serviceFeatureTable2.getFields()
                          ) {
                         Log.d("dbg", "field: " + field.getName() + ", type: " + field.getFieldType());
-                    }
+                    }*/
 
                     /*// create objects required to do a selection with a query
                     QueryParameters query = new QueryParameters();

@@ -6,15 +6,47 @@
     android:layout_height="match_parent"
     tools:context=".BusStopDetail">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/nameLabel"
+            android:text="Název:"
+            style="@style/labelTextView" />
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/valueTextView" />
+
+        <TextView
+            android:id="@+id/linesLabel"
+            android:text="Linky:"
+            style="@style/labelTextView" />
+
+        <TextView
+            android:id="@+id/lines"
+            style="@style/valueTextView" />
+
+        <TextView
+            android:id="@+id/wheelchairAccessibleLabel"
+            android:text="Bezbariérová:"
+            style="@style/labelTextView" />
+
+        <TextView
+            android:id="@+id/wheelchairAccessible"
+            style="@style/valueTextView" />
+
+        <TextView
+            android:id="@+id/departuresLabel"
+            android:text="Aktuální odjezdy:"
+            style="@style/labelTextView" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -24,6 +56,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

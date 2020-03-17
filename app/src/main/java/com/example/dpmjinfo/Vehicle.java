@@ -3,6 +3,26 @@ package com.example.dpmjinfo;
 import java.io.Serializable;
 import java.util.Map;
 
+/*  AVAILABLE FIELDS FROM API
+objectid ( type: esriFieldTypeOID, alias: objectid )
+carnum ( type: esriFieldTypeSmallInteger, alias: carnum )
+delayinmins ( type: esriFieldTypeSmallInteger, alias: delayinmins )
+finalstopid ( type: esriFieldTypeSmallInteger, alias: finalstopid )
+laststopid ( type: esriFieldTypeSmallInteger, alias: laststopid )
+lastpostid ( type: esriFieldTypeSmallInteger, alias: lastpostid )
+latitude ( type: esriFieldTypeDouble, alias: latitude )
+lineid ( type: esriFieldTypeSmallInteger, alias: lineid )
+longitude ( type: esriFieldTypeDouble, alias: longitude )
+routeid ( type: esriFieldTypeSmallInteger, alias: routeid )
+state ( type: esriFieldTypeSmallInteger, alias: state )
+linka ( type: esriFieldTypeString, alias: linka, length: 10 )
+konecna ( type: esriFieldTypeString, alias: konecna, length: 255 )
+posledni ( type: esriFieldTypeString, alias: posledni, length: 255 )
+typ ( type: esriFieldTypeString, alias: typ, length: 10 )
+azimut ( type: esriFieldTypeSmallInteger, alias: azimut )
+speed ( type: esriFieldTypeSmallInteger, alias: speed )
+ */
+
 public class Vehicle implements Serializable {
 
     private Short carNum;

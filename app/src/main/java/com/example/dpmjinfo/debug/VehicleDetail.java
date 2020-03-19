@@ -42,7 +42,12 @@ public class VehicleDetail extends AppCompatActivity {
         line.setText(vehicle.getLine());
         terminal.setText(vehicle.getTerminalStop());
         lastStop.setText(vehicle.getLastStop());
-        delay.setText(String.format("%d",vehicle.getDelayInMins()));
+
+        if(vehicle.getDelayInMins() <= 0 && !vehicle.isWaiting()){
+            delay.setText("bez zpoždění");
+        }else {
+            delay.setText(String.format("%d min", Math.abs(vehicle.getDelayInMins().intValue())));
+        }
 
     }
 }

@@ -41,6 +41,7 @@ public class MapObjectSelection extends AppCompatActivity {
 
         //change activity title
         getSupportActionBar().setTitle("Výběr objektu");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get the Intent that started this activity and extract the required data
         Intent intent = getIntent();
@@ -104,5 +105,11 @@ public class MapObjectSelection extends AppCompatActivity {
                 openDetail(position);
             }
         }));
+    }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 }

@@ -23,6 +23,7 @@ public class VehicleDetail extends AppCompatActivity {
         setContentView(R.layout.activity_vehicle_detail);
 
         getSupportActionBar().setTitle("Detail vozu");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -49,5 +50,11 @@ public class VehicleDetail extends AppCompatActivity {
             delay.setText(String.format("%d min", Math.abs(vehicle.getDelayInMins().intValue())));
         }
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 }

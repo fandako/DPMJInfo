@@ -39,6 +39,7 @@ public class BusStopDetail extends AppCompatActivity {
         setContentView(R.layout.activity_bus_stop_detail);
 
         getSupportActionBar().setTitle("Detail zastávky");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
@@ -109,5 +110,11 @@ public class BusStopDetail extends AppCompatActivity {
                 });
             }
         }).start();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 }

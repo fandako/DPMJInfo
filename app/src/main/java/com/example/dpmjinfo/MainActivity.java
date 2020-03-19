@@ -664,38 +664,47 @@ public class MainActivity extends AppCompatActivity {
                 while (resultIterator.hasNext()) {
                     // get the extent of the first feature in the result to zoom to
                     Feature feature = resultIterator.next();
+                    Vehicle tmpVehicle = new Vehicle(feature.getAttributes());
 
                     //PictureMarkerSymbol vehicleSymbol;
                     ListenableFuture<PictureMarkerSymbol> vehicleSymbolFuture;
-                    if(feature.getAttributes().get("typ") == "autobus") {
-                        //bus
-                        /*vehicleSymbol = new PictureMarkerSymbol("http://10.0.0.139/bus.png")*/;
-                        vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable)getDrawable(R.drawable.bus));
-                    } else {
-                        //trolleybus
-                        /*vehicleSymbol = new PictureMarkerSymbol("http://10.0.0.139/trolleybus.png");*/
-                        vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable)getDrawable(R.drawable.trolleybus));
+                    Log.d("dbg", tmpVehicle.getType() + " " + tmpVehicle.getCarNum());
+                    if (tmpVehicle.isWaiting()){
+                        vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable)getDrawable(R.drawable.waiting));
+                    }else {
+                        if (tmpVehicle.getType() == "autobus") {
+                            //bus
+                            /*vehicleSymbol = new PictureMarkerSymbol("http://10.0.0.139/bus.png")*/
+                            ;
+                            vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) getDrawable(R.drawable.bus));
+                            Log.d("dbg", "autobus symbol");
+                        } else {
+                            //trolleybus
+                            /*vehicleSymbol = new PictureMarkerSymbol("http://10.0.0.139/trolleybus.png");*/
+                            vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) getDrawable(R.drawable.trolleybus));
+                        }
                     }
                     vehicleSymbolFuture.addDoneListener(new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 PictureMarkerSymbol vehicleSymbol = vehicleSymbolFuture.get();
-                                vehicleSymbol.setHeight(48);
-                                vehicleSymbol.setWidth(48);
+                                vehicleSymbol.setHeight(54);
+                                vehicleSymbol.setWidth(54);
 
-                                if (feature.getAttributes().get("azimut") != null) {
-                                    vehicleSymbol.setAngle(Float.parseFloat("" + feature.getAttributes().get("azimut")));
+                                if (tmpVehicle.getAzimuth() != null) {
+                                    //Float.parseFloat("" + feature.getAttributes().get("azimut"))
+                                    vehicleSymbol.setAngle(tmpVehicle.getAzimuth());
                                 }
 
-                                Point p = new Point((double) feature.getAttributes().get("longitude"), (double) feature.getAttributes().get("latitude"), SpatialReferences.getWgs84());
+                                Point p = new Point(tmpVehicle.getLongitude(), tmpVehicle.getLatitude(), SpatialReferences.getWgs84());
                                 Graphic vehicle = new Graphic(p, feature.getAttributes(), vehicleSymbol);
                                 vehicle.setZIndex(1);
                                 graphics.add(vehicle);
                                 vehiclesOverlay.getGraphics().add(vehicle);
 
                                 //text symbol which defines text size, the text and color
-                                TextSymbol txtSymbol = new TextSymbol(10, (String) feature.getAttributes().get("linka"), Color.BLACK, TextSymbol.HorizontalAlignment.LEFT, TextSymbol.VerticalAlignment.MIDDLE);
+                                TextSymbol txtSymbol = new TextSymbol(12, tmpVehicle.getLine(), Color.BLACK, TextSymbol.HorizontalAlignment.LEFT, TextSymbol.VerticalAlignment.MIDDLE);
                                 txtSymbol.setOffsetX(-4);
                                 txtSymbol.setFontWeight(TextSymbol.FontWeight.BOLD);
                                 //create a graphic from the point and symbol
@@ -703,10 +712,18 @@ public class MainActivity extends AppCompatActivity {
                                 gr.setZIndex(999);
                                 vehicleInfoOverlay.getGraphics().add(gr);
 
-                                Short delay = (Short) feature.getAttributes().get("delayinmins");
+                                Short delay = tmpVehicle.getDelayInMins();
 
                                 if(delay != 0) {
-                                    TextSymbol delayTxtSymbol = new TextSymbol(10, delay.toString() + " min", Color.RED, TextSymbol.HorizontalAlignment.LEFT, TextSymbol.VerticalAlignment.MIDDLE);
+
+                                    Integer textColor;
+                                    if(delay < 0){
+                                        textColor = 0x99009900;
+                                    } else {
+                                        textColor = Color.RED;
+                                    }
+
+                                    TextSymbol delayTxtSymbol = new TextSymbol(13, delay.toString() + " min", textColor, TextSymbol.HorizontalAlignment.LEFT, TextSymbol.VerticalAlignment.MIDDLE);
                                     delayTxtSymbol.setOffsetX(20);
                                     delayTxtSymbol.setFontWeight(TextSymbol.FontWeight.BOLD);
                                     //create a graphic from the point and symbol

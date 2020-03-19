@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.dpmjinfo.R;
@@ -14,6 +15,7 @@ public class VehicleDetail extends AppCompatActivity {
     private TextView terminal;
     private TextView lastStop;
     private TextView delay;
+    private TextView delayLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +33,16 @@ public class VehicleDetail extends AppCompatActivity {
         terminal = findViewById(R.id.terminal);
         lastStop = findViewById(R.id.last);
         delay = findViewById(R.id.delay);
+        delayLabel = findViewById(R.id.delayLabel);
+
+        if(vehicle.isWaiting()){
+            delayLabel.setText("Čas do odjezdu:");
+        }
 
         line.setText(vehicle.getLine());
         terminal.setText(vehicle.getTerminalStop());
         lastStop.setText(vehicle.getLastStop());
-        delay.setText(String.format("%o",vehicle.getDelayInMins()));
+        delay.setText(String.format("%d",vehicle.getDelayInMins()));
+
     }
 }

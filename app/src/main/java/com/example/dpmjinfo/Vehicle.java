@@ -178,4 +178,8 @@ public class Vehicle implements Serializable {
     public void setSpeed(Short speed) {
         this.speed = speed;
     }
+
+    public boolean isWaiting(){
+        return getSpeed() == 122;
+    }
 }

@@ -1,7 +1,5 @@
 package com.example.dpmjinfo;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.collection.ArraySet;
 
@@ -24,7 +22,6 @@ import android.widget.ImageButton;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureQueryResult;
-import com.esri.arcgisruntime.data.Field;
 import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.data.TileCache;
@@ -45,9 +42,6 @@ import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.IdentifyGraphicsOverlayResult;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
-import com.esri.arcgisruntime.mapping.view.LayerViewStateChangedEvent;
-import com.esri.arcgisruntime.mapping.view.LayerViewStateChangedListener;
-import com.esri.arcgisruntime.mapping.view.LayerViewStatus;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.TextSymbol;
@@ -58,10 +52,9 @@ import com.example.dpmjinfo.debug.VehicleDetail;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -71,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private static LayerList mOperationalLayers;
     private MobileMapPackage mapPackage;
 
-    private int mInterval = 5*1000; // 60 seconds by default, can be changed later
+    private final int mInterval = 5*1000; // 60 seconds by default, can be changed later
     private Handler mHandler;
     private BroadcastReceiver _broadcastReceiver;
     private boolean updateVehicles;
@@ -79,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
     private GraphicsOverlay vehiclesOverlay;
     private GraphicsOverlay vehicleInfoOverlay;
 
-    DownloadManager downloadManager;
+    private DownloadManager downloadManager;
     private long downloadID;
     private String mapPath = "";
-    private BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+    private final BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             //Fetching the download id received with the broadcast
@@ -100,16 +93,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int SCALE = 40000;
 
-    File file;
+    private File file;
 
     private class IdentifyFeatureLayerTouchListener extends DefaultMapViewOnTouchListener {
 
-        private FeatureLayer layer = null; // reference to the layer to identify features in
-        private GraphicsOverlay graphicsOverlay = null; //reference to the graphics overlay to identify vehicles in
+        private FeatureLayer layer; // reference to the layer to identify features in
+        private GraphicsOverlay graphicsOverlay; //reference to the graphics overlay to identify vehicles in
         private ArraySet<BusStop> identifiedBusStops = new ArraySet<>();
 
         // provide a default constructor
-        public IdentifyFeatureLayerTouchListener(Context context, MapView mapView, FeatureLayer layerToIdentify, GraphicsOverlay graphicsOverlayToIdentify) {
+        IdentifyFeatureLayerTouchListener(Context context, MapView mapView, FeatureLayer layerToIdentify, GraphicsOverlay graphicsOverlayToIdentify) {
             super(context, mapView);
             layer = layerToIdentify;
             graphicsOverlay = graphicsOverlayToIdentify;
@@ -134,12 +127,6 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         // get the identify results from the future - returns when the operation is complete
                         IdentifyLayerResult identifyLayerResult = identifyFuture.get();
-                        // ...
-                        // a reference to the feature layer can be used, for example, to select identified features
-                        FeatureLayer featureLayer = null;
-                        if (identifyLayerResult.getLayerContent() instanceof FeatureLayer) {
-                            featureLayer = (FeatureLayer) identifyLayerResult.getLayerContent();
-                        }
 
                         //remove bus stops identified on previous touch event
                         identifiedBusStops.clear();
@@ -150,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
                                 // access attributes or geometry of the feature, or select it as shown below
                                 Feature identifiedFeature = (Feature) identifiedElement;
                                 BusStop busStop = new BusStop(identifiedFeature);
-                                //Log.d("dbg", "zastavka: " + busStop.getName() + "; " + busStop.getElp_id());
 
                                 //do not include stops without elp_id
                                 if(busStop.getElp_id() != null)
@@ -251,22 +237,6 @@ public class MainActivity extends AppCompatActivity {
 
         mMapView = findViewById(R.id.mapView);
 
-        /*mMapView.addLayerViewStateChangedListener(new LayerViewStateChangedListener() {
-            @Override
-            public void layerViewStateChanged(LayerViewStateChangedEvent layerViewStateChangedEvent) {
-                // Each layer may have more than one layer view state.
-                StringBuilder layerStatuses = new StringBuilder();
-                for (LayerViewStatus status : layerViewStateChangedEvent.getLayerViewStatus()) {
-                    if (layerStatuses.length() > 0) {
-                        layerStatuses.append(",");
-                    }
-                    layerStatuses.append(status.name());
-                }
-
-                Log.d("dbg","Layer " + layerViewStateChangedEvent.getLayer().getName() + " status=" + layerStatuses.toString());
-            }
-        });*/
-
         registerReceiver(onDownloadComplete,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         downloadBasemap();
     }
@@ -279,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
 
         //check if map is present in device
         if(file.exists()){
-            //Log.d("dbg", "map already exists");
             setupMap();
             //loadMobileMapPackage(mapPath);
             return;
@@ -316,11 +285,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Load a mobile map package into a MapView
-     *
-     * @param mmpkFile Full path to mmpk file
-     */
     /*private void loadMobileMapPackage(String mmpkFile) {
         //[DocRef: Name=Open Mobile Map Package-android, Category=Work with maps, Topic=Create an offline map]
         // create the mobile map package
@@ -364,8 +328,8 @@ public class MainActivity extends AppCompatActivity {
             Portal portal = new Portal("https://www.arcgis.com", false);
             PortalItem portalItem = new PortalItem(portal, itemId);
             map = new ArcGISMap(portalItem);*/
-            Log.d("dbg", "setting up map: " + mapPath);
-            Log.d("dbg", Uri.fromFile(file).getPath());
+            //Log.d("dbg", "setting up map: " + mapPath);
+            //Log.d("dbg", Uri.fromFile(file).getPath());
             //Log.d("dbg", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/test1.tpk");
             // instantiate a vector tiled layer with the path to the vtpk file
             /*VectorTileCache cache = new VectorTileCache(mapPath);
@@ -418,15 +382,6 @@ public class MainActivity extends AppCompatActivity {
             FeatureLayer vehiclesOnLine2 = new FeatureLayer(serviceFeatureTable6);
 
             serviceFeatureTable2 = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/6");
-            // create the feature layer using the service feature table
-            /*serviceFeatureTable2.setFeatureRequestMode(ServiceFeatureTable.FeatureRequestMode.MANUAL_CACHE);
-            QueryParameters query = new QueryParameters();
-            // make search case insensitive
-            query.setWhereClause("objectid IS NOT NULL");
-            List<String> list = new ArrayList();
-            list.add("*");
-            serviceFeatureTable2.populateFromServiceAsync(query, true, list);*/
-
             FeatureLayer vehiclesOnLine = new FeatureLayer(serviceFeatureTable2);
             vehiclesOnLine.setVisible(true);
 
@@ -434,65 +389,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     startRepeatingTask();
-
-                    /*for (Field field:serviceFeatureTable2.getFields()
-                         ) {
-                        Log.d("dbg", "field: " + field.getName() + ", type: " + field.getFieldType());
-                    }*/
-
-                    /*// create objects required to do a selection with a query
-                    QueryParameters query = new QueryParameters();
-                    // make search case insensitive
-                    query.setWhereClause("objectid IS NOT NULL");
-                    // call select features
-
-                    Log.d("dbg","feature total count: " + serviceFeatureTable2.getTotalFeatureCount());
-                    final ListenableFuture<FeatureQueryResult> future = serviceFeatureTable2.queryFeaturesAsync(query, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
-
-                    // add done loading listener to fire when the selection returns
-                    future.addDoneListener(() -> {
-                        try {
-                            Integer cnt = 0;
-                            // call get on the future to get the result
-                            FeatureQueryResult result = future.get();
-                            // check there are some results
-                            Iterator<Feature> resultIterator = result.iterator();
-                            if(!resultIterator.hasNext()) {
-                                Log.d("dbg","No features found");
-                            }
-                            List<Graphic> graphics = new ArrayList<Graphic>();
-                            while (resultIterator.hasNext()) {
-                                // get the extent of the first feature in the result to zoom to
-                                Feature feature = resultIterator.next();
-
-                                Point p = new Point((double) feature.getAttributes().get("longitude"), (double) feature.getAttributes().get("latitude"), SpatialReferences.getWgs84());
-                                SimpleMarkerSymbol redCircleSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, 0xFFFF0000, 10);
-                                Graphic vehicle = new Graphic(p, redCircleSymbol);
-                                graphics.add(vehicle);
-                                //Feature f = vehiclesOnLine2.getFeatureTable().createFeature(feature.getAttributes(), p);
-
-                                //feature.getAttributes().forEach((k, v) -> Log.d("dbg", k + ": " + v));
-                                for (Map.Entry<String, Object> entry : feature.getAttributes().entrySet()) {
-                                    Log.d("dbg", entry.getKey() + ": " + entry.getValue());
-                                }
-                                //Log.d("dbg","vehicle: " + feature.getAttributes().get("linka") + " konecna: " + feature.getAttributes().get("konecna"));
-                                cnt++;
-                            }
-                            graphicsOverlay.getGraphics().addAll(graphics);
-                            Log.d("dbg","vehicles cnt from query: " + cnt);
-                        } catch (Exception e) {
-                            String error = "Vehicle search failed for: " + ". Error: " + e.getMessage();
-                            Log.d("dbg",error);
-                        }
-
-                    });*/
                 }
             });
-
-            /*SimpleMarkerSymbol sms = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.SQUARE ,Color.BLUE, 50);
-            // instantiate a simple renderer with the symbol created above
-            SimpleRenderer simRenderer = new SimpleRenderer(sms);
-            vehiclesOnLine.setRenderer(simRenderer);*/
 
             map.getOperationalLayers().add(vehiclesOnLine);
 
@@ -506,43 +404,6 @@ public class MainActivity extends AppCompatActivity {
             ServiceFeatureTable serviceFeatureTable3 = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/3");
             // create the feature layer using the service feature table
             FeatureLayer stops = new FeatureLayer(serviceFeatureTable3);
-
-            /*serviceFeatureTable3.addDoneLoadingListener(new Runnable() {
-                @Override
-                public void run() {
-                    // create objects required to do a selection with a query
-                    QueryParameters query = new QueryParameters();
-                    // make search case insensitive
-                    query.setWhereClause("objectid IS NOT NULL");
-                    // call select features
-                    Log.d("dbg","feature total count: " + serviceFeatureTable3.getTotalFeatureCount());
-                    final ListenableFuture<FeatureQueryResult> future = serviceFeatureTable3.queryFeaturesAsync(query,  ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
-                    // add done loading listener to fire when the selection returns
-                    future.addDoneListener(() -> {
-                        try {
-                            Integer cnt = 0;
-                            // call get on the future to get the result
-                            FeatureQueryResult result = future.get();
-                            // check there are some results
-                            Iterator<Feature> resultIterator = result.iterator();
-                            if(!resultIterator.hasNext()) {
-                                Log.d("dbg","No features found");
-                            }
-                            while (resultIterator.hasNext()) {
-                                // get the extent of the first feature in the result to zoom to
-                                Feature feature = resultIterator.next();
-                                Log.d("dbg","stop: " + feature.getAttributes().get("nazev") + " linky: " + feature.getAttributes().get("linky"));
-                                cnt++;
-                            }
-                            Log.d("dbg","stops cnt from query: " + cnt);
-                        } catch (Exception e) {
-                            String error = "Feature search failed for: " + ". Error: " + e.getMessage();
-                            Log.d("dbg",error);
-                        }
-
-                    });
-                }
-            });*/
 
             // add the layer to the map
             map.getOperationalLayers().add(stops);
@@ -600,23 +461,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });*/
 
-            /*lines.getFeatureTable().addDoneLoadingListener(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("dbg","fields count " + lines.getFeatureTable().getFields().size());
-
-                    List<Field> fields = lines.getFeatureTable().getFields();
-
-                    for (Field field:fields
-                    ) {
-                        Log.d("dbg","field " + field.getName());
-                    }
-
-                    Log.d("dbg","features count " + lines.getFeatureTable().getTotalFeatureCount());
-                }
-            });*/
-
-
             // add the layer to the map
             map.getOperationalLayers().add(lines);
 
@@ -630,25 +474,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public String getURLForResource (int resourceId) {
-        //use BuildConfig.APPLICATION_ID instead of R.class.getPackage().getName() if both are not same
-        return Uri.parse("android.resource://"+R.class.getPackage().getName()+"/" +resourceId).toString();
-    }
-
-    void updateStatus(){
+    private void updateStatus(){
         // create objects required to do a selection with a query
         QueryParameters query = new QueryParameters();
         // make search case insensitive
         query.setWhereClause("objectid IS NOT NULL");
         // call select features
 
-        Log.d("dbg","feature total count: " + serviceFeatureTable2.getTotalFeatureCount());
         final ListenableFuture<FeatureQueryResult> future = serviceFeatureTable2.queryFeaturesAsync(query, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
 
         // add done loading listener to fire when the selection returns
         future.addDoneListener(() -> {
             try {
-                Integer cnt = 0;
                 // call get on the future to get the result
                 FeatureQueryResult result = future.get();
                 // check there are some results
@@ -660,7 +497,7 @@ public class MainActivity extends AppCompatActivity {
 
                 vehiclesOverlay.getGraphics().clear();
                 vehicleInfoOverlay.getGraphics().clear();
-                List<Graphic> graphics = new ArrayList<Graphic>();
+
                 while (resultIterator.hasNext()) {
                     // get the extent of the first feature in the result to zoom to
                     Feature feature = resultIterator.next();
@@ -670,12 +507,12 @@ public class MainActivity extends AppCompatActivity {
                     ListenableFuture<PictureMarkerSymbol> vehicleSymbolFuture;
 
                     if (tmpVehicle.isWaiting()){
-                        vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable)getDrawable(R.drawable.waiting));
-                    }else { ;
+                        vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) Objects.requireNonNull(getDrawable(R.drawable.waiting)));
+                    }else {
                         if (tmpVehicle.getType().compareTo("autobus") == 0) {
-                            vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) getDrawable(R.drawable.bus));
+                            vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) Objects.requireNonNull(getDrawable(R.drawable.bus)));
                         } else {
-                            vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) getDrawable(R.drawable.trolleybus));
+                            vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) Objects.requireNonNull(getDrawable(R.drawable.trolleybus)));
                         }
                     }
 
@@ -694,7 +531,6 @@ public class MainActivity extends AppCompatActivity {
                                 Point p = new Point(tmpVehicle.getLongitude(), tmpVehicle.getLatitude(), SpatialReferences.getWgs84());
                                 Graphic vehicle = new Graphic(p, feature.getAttributes(), vehicleSymbol);
                                 vehicle.setZIndex(1);
-                                graphics.add(vehicle);
                                 vehiclesOverlay.getGraphics().add(vehicle);
 
                                 //text symbol which defines text size, the text and color
@@ -731,50 +567,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     });
-                    /*vehicleSymbol.setHeight(48);
-                    vehicleSymbol.setWidth(48);
-
-                    if(feature.getAttributes().get("azimut") != null){
-                        //Log.d("dbg", "azimut: " + feature.getAttributes().get("azimut"));
-                        vehicleSymbol.setAngle(Float.parseFloat("" + feature.getAttributes().get("azimut")));
-                    }
-
-                    vehicleSymbol.loadAsync();
-
-
-                    vehicleSymbol.addDoneLoadingListener(new Runnable() {
-                        @Override
-                        public void run() {
-                            Point p = new Point((double) feature.getAttributes().get("longitude"), (double) feature.getAttributes().get("latitude"), SpatialReferences.getWgs84());
-                            Graphic vehicle = new Graphic(p, vehicleSymbol);
-                            vehicle.setZIndex(1);
-                            graphics.add(vehicle);
-
-                            //text symbol which defines text size, the text and color
-                            TextSymbol txtSymbol = new TextSymbol(10, (String) feature.getAttributes().get("linka"),Color.BLACK, TextSymbol.HorizontalAlignment.LEFT, TextSymbol.VerticalAlignment.MIDDLE);
-                            txtSymbol.setOffsetX(-4);
-                            //create a graphic from the point and symbol
-                            Graphic gr = new Graphic(p, txtSymbol);
-                            gr.setZIndex(999);
-
-                            //add the graphic to the map
-                            graphicsOverlay.getGraphics().add(vehicle);
-                            graphicsOverlay.getGraphics().add(gr);
-                        }
-                    });*/
-
-
-                    //Feature f = vehiclesOnLine2.getFeatureTable().createFeature(feature.getAttributes(), p);
-
-                    //feature.getAttributes().forEach((k, v) -> Log.d("dbg", k + ": " + v));
-                    /*for (Map.Entry<String, Object> entry : feature.getAttributes().entrySet()) {
-                        Log.d("dbg", entry.getKey() + ": " + entry.getValue());
-                    }*/
-                    //Log.d("dbg","vehicle: " + feature.getAttributes().get("linka") + " konecna: " + feature.getAttributes().get("konecna"));
-                    cnt++;
                 }
-                //graphicsOverlay.getGraphics().addAll(graphics);
-                Log.d("dbg","vehicles cnt from query: " + cnt);
             } catch (Exception e) {
                 String error = "Vehicle search failed for: " + ". Error: " + e.getMessage();
                 Log.d("dbg",error);
@@ -783,26 +576,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private Runnable mStatusChecker = new Runnable() {
+    private final Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
-            try {
-                if(updateVehicles)
-                    updateStatus(); //this function can change value of mInterval.
-            } finally {
-                // 100% guarantee that this always happens, even if
-                // your update method throws an exception
-                //mHandler.postDelayed(mStatusChecker, mInterval);
-            }
+            if(updateVehicles)
+                updateStatus();
         }
     };
 
-    void startRepeatingTask() {
+    private void startRepeatingTask() {
         updateVehicles = true;
         mStatusChecker.run();
     }
 
-    void stopRepeatingTask() {
+    private void stopRepeatingTask() {
         mHandler.removeCallbacks(mStatusChecker);
     }
 

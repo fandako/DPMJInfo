@@ -668,22 +668,17 @@ public class MainActivity extends AppCompatActivity {
 
                     //PictureMarkerSymbol vehicleSymbol;
                     ListenableFuture<PictureMarkerSymbol> vehicleSymbolFuture;
-                    Log.d("dbg", tmpVehicle.getType() + " " + tmpVehicle.getCarNum());
+
                     if (tmpVehicle.isWaiting()){
                         vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable)getDrawable(R.drawable.waiting));
-                    }else {
-                        if (tmpVehicle.getType() == "autobus") {
-                            //bus
-                            /*vehicleSymbol = new PictureMarkerSymbol("http://10.0.0.139/bus.png")*/
-                            ;
+                    }else { ;
+                        if (tmpVehicle.getType().compareTo("autobus") == 0) {
                             vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) getDrawable(R.drawable.bus));
-                            Log.d("dbg", "autobus symbol");
                         } else {
-                            //trolleybus
-                            /*vehicleSymbol = new PictureMarkerSymbol("http://10.0.0.139/trolleybus.png");*/
                             vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) getDrawable(R.drawable.trolleybus));
                         }
                     }
+
                     vehicleSymbolFuture.addDoneListener(new Runnable() {
                         @Override
                         public void run() {
@@ -693,7 +688,6 @@ public class MainActivity extends AppCompatActivity {
                                 vehicleSymbol.setWidth(54);
 
                                 if (tmpVehicle.getAzimuth() != null) {
-                                    //Float.parseFloat("" + feature.getAttributes().get("azimut"))
                                     vehicleSymbol.setAngle(tmpVehicle.getAzimuth());
                                 }
 
@@ -704,8 +698,8 @@ public class MainActivity extends AppCompatActivity {
                                 vehiclesOverlay.getGraphics().add(vehicle);
 
                                 //text symbol which defines text size, the text and color
-                                TextSymbol txtSymbol = new TextSymbol(12, tmpVehicle.getLine(), Color.BLACK, TextSymbol.HorizontalAlignment.LEFT, TextSymbol.VerticalAlignment.MIDDLE);
-                                txtSymbol.setOffsetX(-4);
+                                TextSymbol txtSymbol = new TextSymbol(12, tmpVehicle.getLine(), Color.BLACK, TextSymbol.HorizontalAlignment.CENTER, TextSymbol.VerticalAlignment.MIDDLE);
+                                //txtSymbol.setOffsetX(-4);
                                 txtSymbol.setFontWeight(TextSymbol.FontWeight.BOLD);
                                 //create a graphic from the point and symbol
                                 Graphic gr = new Graphic(p, txtSymbol);
@@ -714,7 +708,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 Short delay = tmpVehicle.getDelayInMins();
 
-                                if(delay != 0) {
+                                if(delay != 0 && !tmpVehicle.isWaiting()) {
 
                                     Integer textColor;
                                     if(delay < 0){

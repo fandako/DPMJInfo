@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
@@ -46,6 +47,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.TextSymbol;
 import com.example.dpmjinfo.debug.BusStopDetail;
+import com.example.dpmjinfo.debug.MapFilterActivity;
 import com.example.dpmjinfo.debug.MapKey;
 import com.example.dpmjinfo.debug.MapObjectSelection;
 import com.example.dpmjinfo.debug.VehicleDetail;
@@ -61,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ArcGISMap map;
     private MapView mMapView;
+    private FeatureLayer lines;
+    private FeatureLayer linesMap;
     private static LayerList mOperationalLayers;
     private MobileMapPackage mapPackage;
 
@@ -71,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
     private ServiceFeatureTable serviceFeatureTable2;
     private GraphicsOverlay vehiclesOverlay;
     private GraphicsOverlay vehicleInfoOverlay;
+
+    private ArrayList<String> lineFilter = new ArrayList<>();
+    private ArrayList<String> allLines = new ArrayList<>();
+    private boolean filterActive;
 
     private DownloadManager downloadManager;
     private long downloadID;
@@ -94,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int SCALE = 40000;
 
     private File file;
+
+    static final int FILTER_REQUEST = 1;
 
     private class IdentifyFeatureLayerTouchListener extends DefaultMapViewOnTouchListener {
 
@@ -220,7 +230,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ImageButton filterButton = findViewById(R.id.mapFilter);
+        filterButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MapFilterActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("com.example.dpmjinfo.lineFilter", lineFilter);
+                bundle.putSerializable("com.example.dpmjinfo.lines", allLines);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, FILTER_REQUEST);
+            }
+        });
+
+        Button cancelFilterButton = findViewById(R.id.cancelFilterButton);
+        cancelFilterButton.setVisibility(View.GONE);
+        cancelFilterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterActive = false;
+                lineFilter.clear();
+
+                lines.setVisible(false);
+                linesMap.setVisible(true);
+
+                ((Button) v).setVisibility(View.GONE);
+                updateStatus();
+            }
+        });
+
         updateVehicles = false;
+        filterActive = false;
 
         mHandler = new Handler();
 
@@ -411,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
 
             ServiceFeatureTable serviceFeatureTable5 = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/4");
             // create the feature layer using the service feature table
-            FeatureLayer linesMap = new FeatureLayer(serviceFeatureTable5);
+            linesMap = new FeatureLayer(serviceFeatureTable5);
 
             linesMap.setVisible(true);
 
@@ -421,22 +461,21 @@ public class MainActivity extends AppCompatActivity {
             // create the feature layer using the service feature table
             serviceFeatureTable.setRequestConfiguration(new RequestConfiguration());
 
-            FeatureLayer lines = new FeatureLayer(serviceFeatureTable);
+            lines = new FeatureLayer(serviceFeatureTable);
             lines.setVisible(false);
-            /*serviceFeatureTable.addDoneLoadingListener(new Runnable() {
+            serviceFeatureTable.addDoneLoadingListener(new Runnable() {
                 @Override
                 public void run() {
                     // create objects required to do a selection with a query
                     QueryParameters query = new QueryParameters();
                     // make search case insensitive
-                    query.setWhereClause("linka = 'Linka 3' OR linka = 'Linka 12' OR linka = 'Linka 5'");
+                    query.setWhereClause("objectid IS NOT NULL");
                     // call select features
-                    Log.d("dbg","feature total count: " + serviceFeatureTable.getTotalFeatureCount());
+                    //Log.d("dbg","feature total count: " + serviceFeatureTable.getTotalFeatureCount());
                     final ListenableFuture<FeatureQueryResult> future = serviceFeatureTable.queryFeaturesAsync(query,  ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
                     // add done loading listener to fire when the selection returns
                     future.addDoneListener(() -> {
                         try {
-                            Integer cnt = 0;
                             // call get on the future to get the result
                             FeatureQueryResult result = future.get();
                             // check there are some results
@@ -448,10 +487,11 @@ public class MainActivity extends AppCompatActivity {
                                 // get the extent of the first feature in the result to zoom to
                                 Feature feature = resultIterator.next();
                                 lines.setFeatureVisible(feature, false);
-                                Log.d("dbg","feature: " + feature.getAttributes().get("linka"));
-                                cnt++;
+                                String line = (String) feature.getAttributes().get("linka");
+                                allLines.add(line);
+                                //lineFilter.add(line);
+                                Log.d("dbg","feature: " + line);
                             }
-                            Log.d("dbg","Feature cnt from query: " + cnt);
                         } catch (Exception e) {
                             String error = "Feature search failed for: " + ". Error: " + e.getMessage();
                             Log.d("dbg",error);
@@ -459,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
 
                     });
                 }
-            });*/
+            });
 
             // add the layer to the map
             map.getOperationalLayers().add(lines);
@@ -505,6 +545,11 @@ public class MainActivity extends AppCompatActivity {
 
                     //PictureMarkerSymbol vehicleSymbol;
                     ListenableFuture<PictureMarkerSymbol> vehicleSymbolFuture;
+
+                    String line = "Linka " + tmpVehicle.getLine();
+                    if(filterActive && !lineFilter.isEmpty() && !lineFilter.contains(line)){
+                        continue;
+                    }
 
                     if (tmpVehicle.isWaiting()){
                         vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) Objects.requireNonNull(getDrawable(R.drawable.waiting)));
@@ -591,6 +636,63 @@ public class MainActivity extends AppCompatActivity {
 
     private void stopRepeatingTask() {
         mHandler.removeCallbacks(mStatusChecker);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request it is that we're responding to
+        if (requestCode == FILTER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Button cancelFilterButton = findViewById(R.id.cancelFilterButton);
+                cancelFilterButton.setVisibility(View.VISIBLE);
+
+                Bundle bundle = data.getExtras();
+                //get list of checked lines
+                lineFilter = (ArrayList<String>) bundle.getSerializable("com.example.dpmjinfo.lineFilter");
+                filterActive = true;
+
+                ServiceFeatureTable linesTable = (ServiceFeatureTable) lines.getFeatureTable();
+
+                QueryParameters query = new QueryParameters();
+                //query for all lines
+                query.setWhereClause("objectid IS NOT NULL");
+
+                final ListenableFuture<FeatureQueryResult> future = linesTable.queryFeaturesAsync(query, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+                // add done loading listener to fire when the selection returns
+                future.addDoneListener(() -> {
+                    try {
+                        // call get on the future to get the result
+                        FeatureQueryResult result = future.get();
+                        // check there are some results
+                        Iterator<Feature> resultIterator = result.iterator();
+                        if(!resultIterator.hasNext()) {
+                            Log.d("dbg","No features found");
+                            return;
+                        }
+                        while (resultIterator.hasNext()) {
+                            // get the extent of the first feature in the result to zoom to
+                            Feature feature = resultIterator.next();
+                            String line = (String) feature.getAttributes().get("linka");
+
+                            if(lineFilter.contains(line)){
+                                lines.setFeatureVisible(feature, true);
+                            }else{
+                                lines.setFeatureVisible(feature, false);
+                            }
+                        }
+
+                        lines.setVisible(true);
+                        linesMap.setVisible(false);
+                        updateStatus();
+                    } catch (Exception e) {
+                        String error = "Feature search failed for: " + ". Error: " + e.getMessage();
+                        Log.d("dbg",error);
+                    }
+
+                });
+
+            }
+        }
     }
 
     @Override

@@ -19,10 +19,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".debug.MapFilterActivity"></activity>
         <activity android:name=".debug.MapKey">
+
             <!-- EMPTY -->
         </activity>
         <activity android:name=".debug.VehicleDetail">
+
             <!-- EMPTY -->
         </activity>
         <activity android:name=".debug.MapObjectSelection">

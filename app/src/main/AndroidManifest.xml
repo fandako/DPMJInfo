@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.dpmjinfo">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -19,16 +20,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".debug.MapFilterActivity"></activity>
-        <activity android:name=".debug.MapKey">
+        <activity android:name=".activities.Departures"></activity>
+        <activity android:name=".activities.DownloadActivity" />
+        <activity
+            android:name=".activities.SchedulesActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.MapFilterActivity" />
+        <activity android:name=".activities.MapKeyActivity">
 
             <!-- EMPTY -->
         </activity>
-        <activity android:name=".debug.VehicleDetail">
+        <activity android:name=".activities.VehicleDetailActivity">
 
             <!-- EMPTY -->
         </activity>
-        <activity android:name=".debug.MapObjectSelection">
+        <activity android:name=".activities.MapObjectSelectionActivity">
 
             <!-- android:parentActivityName=".MainActivity" -->
             <!-- The meta-data tag is required if you support API level 15 and lower -->
@@ -38,7 +50,7 @@
             android:value=".MainActivity" />
             -->
         </activity>
-        <activity android:name=".debug.BusStopDetail">
+        <activity android:name=".activities.BusStopDetailActivity">
 
             <!-- android:parentActivityName=".debug.MapObjectSelection" -->
             <!-- The meta-data tag is required if you support API level 15 and lower -->
@@ -50,13 +62,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>

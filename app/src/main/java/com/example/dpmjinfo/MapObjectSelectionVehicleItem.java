@@ -1,6 +1,6 @@
 package com.example.dpmjinfo;
 
-import com.example.dpmjinfo.debug.VehicleDetail;
+import com.example.dpmjinfo.activities.VehicleDetailActivity;
 
 public class MapObjectSelectionVehicleItem extends MapObjectSelectionItem {
     private Vehicle vehicle;
@@ -21,7 +21,7 @@ public class MapObjectSelectionVehicleItem extends MapObjectSelectionItem {
 
     @Override
     public Class<?> getDetailActivityClass() {
-        return VehicleDetail.class;
+        return VehicleDetailActivity.class;
     }
 
     @Override

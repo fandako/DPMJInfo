@@ -1,6 +1,5 @@
-package com.example.dpmjinfo.debug;
+package com.example.dpmjinfo.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -9,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.dpmjinfo.BusStop;
@@ -22,12 +20,10 @@ import com.example.dpmjinfo.RecycleViewClickListener;
 import com.example.dpmjinfo.RecyclerViewTouchListener;
 import com.example.dpmjinfo.Vehicle;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class MapObjectSelection extends AppCompatActivity {
+public class MapObjectSelectionActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter busStopDepartureAdapter;
     private RecyclerView.LayoutManager layoutManager;

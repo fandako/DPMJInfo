@@ -46,11 +46,11 @@ import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.TextSymbol;
-import com.example.dpmjinfo.debug.BusStopDetail;
-import com.example.dpmjinfo.debug.MapFilterActivity;
-import com.example.dpmjinfo.debug.MapKey;
-import com.example.dpmjinfo.debug.MapObjectSelection;
-import com.example.dpmjinfo.debug.VehicleDetail;
+import com.example.dpmjinfo.activities.BusStopDetailActivity;
+import com.example.dpmjinfo.activities.MapFilterActivity;
+import com.example.dpmjinfo.activities.MapKeyActivity;
+import com.example.dpmjinfo.activities.MapObjectSelectionActivity;
+import com.example.dpmjinfo.activities.VehicleDetailActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -176,11 +176,11 @@ public class MainActivity extends AppCompatActivity {
                                     //if single object selected -> display detail, otherwise display object selection activity
                                     if(graphics.size() + identifiedBusStops.size() == 1){
                                         if(identifiedBusStops.isEmpty()){
-                                            intent = new Intent(getApplicationContext(), VehicleDetail.class);
+                                            intent = new Intent(getApplicationContext(), VehicleDetailActivity.class);
                                             bundle.putSerializable("com.android.dpmjinfo.vehicle", new Vehicle(graphics.get(0).getAttributes()));
                                             intent.putExtras(bundle);
                                         }else{
-                                            intent = new Intent(getApplicationContext(), BusStopDetail.class);
+                                            intent = new Intent(getApplicationContext(), BusStopDetailActivity.class);
                                             bundle.putSerializable("com.android.dpmjinfo.busStop", identifiedBusStops.valueAt(0));
                                             intent.putExtras(bundle);
                                         }
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                                             vehicles.add(new Vehicle(graphic.getAttributes()));
                                         }
 
-                                        intent = new Intent(getApplicationContext(), MapObjectSelection.class);
+                                        intent = new Intent(getApplicationContext(), MapObjectSelectionActivity.class);
                                         bundle.putSerializable("com.android.dpmjinfo.busStops", new ArrayList<BusStop>(identifiedBusStops));
                                         bundle.putSerializable("com.android.dpmjinfo.vehicles", vehicles);
                                         intent.putExtras(bundle);
@@ -221,11 +221,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         ImageButton infoButton = findViewById(R.id.mapKey);
         infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MapKey.class);
+                Intent intent = new Intent(getApplicationContext(), MapKeyActivity.class);
                 startActivity(intent);
             }
         });
@@ -715,5 +717,11 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(onDownloadComplete);
         if (_broadcastReceiver != null)
             unregisterReceiver(_broadcastReceiver);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }

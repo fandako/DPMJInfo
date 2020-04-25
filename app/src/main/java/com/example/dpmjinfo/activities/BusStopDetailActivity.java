@@ -1,4 +1,4 @@
-package com.example.dpmjinfo.debug;
+package com.example.dpmjinfo.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BusStopDetail extends AppCompatActivity {
+public class BusStopDetailActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter busStopDepartureAdapter;
     private RecyclerView.LayoutManager layoutManager;

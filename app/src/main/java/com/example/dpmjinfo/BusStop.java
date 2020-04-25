@@ -1,5 +1,7 @@
 package com.example.dpmjinfo;
 
+import androidx.annotation.NonNull;
+
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.layers.IntegratedMeshLayer;
 
@@ -166,5 +168,12 @@ public class BusStop implements Serializable {
         }
 
         return false;
+    }
+
+    //has effect on how busStops are displayed in searchable spinner!!!
+    @NonNull
+    @Override
+    public String toString() {
+        return getName();
     }
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/timeLabel"
+            style="@style/labelTextView"
+            android:text="Čas:" />
+
+        <EditText
+            android:id="@+id/time"
+            android:inputType="none"
+            style="@style/valueTextView"/>
+
+        <TextView
+            android:id="@+id/dateLabel"
+            style="@style/labelTextView"
+            android:text="Datum:" />
+
+        <EditText
+            android:id="@+id/date"
+            android:inputType="none"
+            style="@style/valueTextView"/>
+
+        <TextView
+            android:id="@+id/lineLabel"
+            style="@style/labelTextView"
+            android:text="Linka:" />
+
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+            android:id="@+id/line"
+            style="@style/valueTextView" />
+
+        <TextView
+            android:id="@+id/stopLabel"
+            style="@style/labelTextView"
+            android:text="Zastávka:" />
+
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+            android:id="@+id/stop"
+            style="@style/valueTextView" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

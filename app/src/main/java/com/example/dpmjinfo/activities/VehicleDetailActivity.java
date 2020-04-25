@@ -1,16 +1,15 @@
-package com.example.dpmjinfo.debug;
+package com.example.dpmjinfo.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.example.dpmjinfo.R;
 import com.example.dpmjinfo.Vehicle;
 
-public class VehicleDetail extends AppCompatActivity {
+public class VehicleDetailActivity extends AppCompatActivity {
     private TextView line;
     private TextView terminal;
     private TextView lastStop;

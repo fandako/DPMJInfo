@@ -1,6 +1,5 @@
-package com.example.dpmjinfo.debug;
+package com.example.dpmjinfo.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -12,7 +11,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 
@@ -22,7 +20,6 @@ import com.example.dpmjinfo.RecycleViewClickListener;
 import com.example.dpmjinfo.RecyclerViewTouchListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MapFilterActivity extends AppCompatActivity {
     private RecyclerView recyclerView;

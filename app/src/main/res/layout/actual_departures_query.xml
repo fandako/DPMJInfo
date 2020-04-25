@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/elpFields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/elpStopLabel"
+            style="@style/labelTextView"
+            android:text="Zastávka:" />
+
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+            android:id="@+id/elpStop"
+            style="@style/valueTextView" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/elpProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:indeterminate="true"
+        android:max="100"
+        android:minWidth="120dp"
+        android:minHeight="120dp"
+        android:progress="1"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/elpFields"
+
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/elpProgressBarLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/elpProgressBar"
+        android:textAlignment="center"
+        android:text="Načítám zastávky" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

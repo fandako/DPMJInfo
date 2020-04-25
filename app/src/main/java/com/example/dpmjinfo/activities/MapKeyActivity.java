@@ -1,4 +1,4 @@
-package com.example.dpmjinfo.debug;
+package com.example.dpmjinfo.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.example.dpmjinfo.R;
 
-public class MapKey extends AppCompatActivity {
+public class MapKeyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,8 +1,6 @@
 package com.example.dpmjinfo;
 
-import android.graphics.drawable.Drawable;
-
-import com.example.dpmjinfo.debug.BusStopDetail;
+import com.example.dpmjinfo.activities.BusStopDetailActivity;
 
 public class MapObjectSelectionBusStopItem extends MapObjectSelectionItem {
 
@@ -24,7 +22,7 @@ public class MapObjectSelectionBusStopItem extends MapObjectSelectionItem {
 
     @Override
     public Class<?> getDetailActivityClass() {
-        return BusStopDetail.class;
+        return BusStopDetailActivity.class;
     }
 
     @Override

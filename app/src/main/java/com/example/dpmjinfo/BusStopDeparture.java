@@ -8,6 +8,16 @@ public class BusStopDeparture implements Serializable, Comparable<BusStopDepartu
     private String departure;
     private int lineId;
     private int connectionId;
+    private int stopID;
+
+    public BusStopDeparture(){
+        this.line = "";
+        this.name = "";
+        this.departure = "";
+        this.connectionId = -1;
+        this.lineId = -1;
+        this.stopID = -1;
+    }
 
     public BusStopDeparture(String line, String name, String departure) {
         this.line = line;
@@ -21,6 +31,15 @@ public class BusStopDeparture implements Serializable, Comparable<BusStopDepartu
         this.departure = departure;
         this.connectionId = conId;
         this.lineId = lId;
+    }
+
+    public BusStopDeparture(String line, String name, String departure, int lId, int conId, int stopID) {
+        this.line = line;
+        this.name = name;
+        this.departure = departure;
+        this.connectionId = conId;
+        this.lineId = lId;
+        this.stopID = stopID;
     }
 
     public String getLine() {
@@ -61,6 +80,14 @@ public class BusStopDeparture implements Serializable, Comparable<BusStopDepartu
 
     public void setDeparture(String departure) {
         this.departure = departure;
+    }
+
+    public int getStopID() {
+        return stopID;
+    }
+
+    public void setStopID(int stopID) {
+        this.stopID = stopID;
     }
 
     @Override

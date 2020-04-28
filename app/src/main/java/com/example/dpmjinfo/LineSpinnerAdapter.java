@@ -13,9 +13,10 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-public class BusStopSpinnerAdapter extends BaseSpinnerAdapter<BusStop> {
+public class LineSpinnerAdapter extends BaseSpinnerAdapter<Line> {
 
-    public BusStopSpinnerAdapter(@NonNull Context context, int resource, @NonNull List objects) {
+
+    public LineSpinnerAdapter(@NonNull Context context, int resource, @NonNull List objects) {
         super(context, resource, objects);
     }
 
@@ -24,10 +25,11 @@ public class BusStopSpinnerAdapter extends BaseSpinnerAdapter<BusStop> {
 
         TextView spinnerItem = (TextView) view.findViewById(R.id.text);
 
-        BusStop busStop = items.get(position);
+        Line line = items.get(position);
 
-        spinnerItem.setText(busStop.getName());
+        spinnerItem.setText(line.getLineName());
 
         return view;
     }
 }
+

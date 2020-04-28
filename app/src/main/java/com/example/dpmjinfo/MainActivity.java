@@ -1,15 +1,19 @@
 package com.example.dpmjinfo;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.collection.ArraySet;
 
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,6 +51,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.TextSymbol;
 import com.example.dpmjinfo.activities.BusStopDetailActivity;
+import com.example.dpmjinfo.activities.DownloadActivity;
 import com.example.dpmjinfo.activities.MapFilterActivity;
 import com.example.dpmjinfo.activities.MapKeyActivity;
 import com.example.dpmjinfo.activities.MapObjectSelectionActivity;
@@ -54,12 +59,13 @@ import com.example.dpmjinfo.activities.VehicleDetailActivity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OfflineFileManagerRequestsDoneListener{
 
     private ArcGISMap map;
     private MapView mMapView;
@@ -105,7 +111,13 @@ public class MainActivity extends AppCompatActivity {
 
     static final int FILTER_REQUEST = 1;
 
-    private class IdentifyFeatureLayerTouchListener extends DefaultMapViewOnTouchListener {
+    //download related variables
+    OfflineFilesManager ofm;
+    ArrayList<String> missingFiles;
+    AlertDialog.Builder alertBuilder = null;
+    static final int DOWNLOAD_REQUEST = 2;
+
+    private class IdentifyFeatureLayerTouchListener extends DefaultMapViewOnTouchListener{
 
         private FeatureLayer layer; // reference to the layer to identify features in
         private GraphicsOverlay graphicsOverlay; //reference to the graphics overlay to identify vehicles in
@@ -221,6 +233,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ofm = new OfflineFilesManager(this);
+        missingFiles = new ArrayList<>();
+
+        if (isNetworkAvailable()) {
+            ArrayList<String> requiredFiles = new ArrayList<>();
+            requiredFiles.add(OfflineFilesManager.MAP);
+            ofm.getFilesToDownload(this, requiredFiles);
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ImageButton infoButton = findViewById(R.id.mapKey);
@@ -284,7 +305,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void downloadBasemap(){
-        mapPath = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/test1.tpk";
+        //mapPath = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/test1.tpk";
+        String mapPath = ofm.getFilePath(OfflineFilesManager.MAP);
         Log.d("dbg", mapPath);
 
         file = new File(mapPath);
@@ -296,12 +318,9 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        downloadManager= (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        /*downloadManager= (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 
         try{
-       /*
-       Create a DownloadManager.Request with all the information necessary to start the download
-        */
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http://10.0.0.139/test1.tpk"));
         //Restrict the types of networks over which this download may proceed.
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
@@ -323,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("error", "Line no: 455,Method: downloadFile: Download link is broken");
 
         }
-
+*/
 
     }
 
@@ -694,7 +713,78 @@ public class MainActivity extends AppCompatActivity {
                 });
 
             }
+        } else if(requestCode == DOWNLOAD_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
+            } else {
+                //download canceled or failed
+                alertBuilder = new AlertDialog.Builder(this);
+                alertBuilder
+                        .setMessage("Při stahování došlo k chybě")
+                        .setTitle("Chyba stahování")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                downloadBasemap();
+                            }
+                        });
+
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            }
+
+            downloadBasemap();
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onOfflineFileManagerRequestsDone(Hashtable<String, String> results) {
+        ArrayList<String> urls = new ArrayList<>();
+        for (String key : results.keySet()
+        ) {
+            Log.d("dbg offline", key + " - " + results.get(key));
+            urls.add(results.get(key));
+        }
+
+        if (!urls.isEmpty()) {
+            //download canceled or failed
+            alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder
+                    .setMessage("Je k dispozici nová verze podkladové mapy. Stáhnout Nyní?")
+                    .setTitle("Aktualizace")
+                    .setPositiveButton("Stáhnout", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            OfflineFilesManager ofm = new OfflineFilesManager(getApplicationContext());
+                            Intent intent = new Intent(getApplicationContext(), DownloadActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("com.example.dpmjinfo.url", results);
+                            bundle.putSerializable("com.example.dpmjinfo.downloadDir", ofm.getDownloadDir());
+                            intent.putExtras(bundle);
+                            startActivityForResult(intent, DOWNLOAD_REQUEST);
+                        }
+                    })
+                    .setNeutralButton("Nyní ne", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            downloadBasemap();
+                        }
+                    });
+
+            AlertDialog alert = alertBuilder.create();
+            alert.show();
+        }
+
+        downloadBasemap();
     }
 
     @Override

@@ -9,7 +9,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
+import com.example.dpmjinfo.BaseAdapter;
 import com.example.dpmjinfo.BusStop;
 import com.example.dpmjinfo.BusStopDeparture;
 import com.example.dpmjinfo.BusStopDeparturesAdapter;
@@ -36,16 +40,17 @@ public class Departures extends AppCompatActivity {
     private boolean iSFirstLoad = true;
     private int page_size = 10;
     private int currentPage = PAGE_START;
-    private BusStopDeparturesAdapter adapter;
+    private BusStopDeparturesAdapter adapter2;
+    private BaseAdapter adapter;
     private LinearLayoutManager layoutManager;
     //DepartureQuery query;
     private ScheduleQuery query;
+    private TextView noItemsText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_departures);
-
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -66,10 +71,10 @@ public class Departures extends AppCompatActivity {
         //get list of bus departures
         //ArrayList<BusStopDeparture> departures = new ArrayList<>(query.exec(currentPage));
         //page_size = departures.size();
-        ArrayList<BusStopDeparture> departures = new ArrayList<>();
 
         //page_size = departures.size();
 
+        noItemsText = findViewById(R.id.noItemsText);
 
         recyclerView = findViewById(R.id.departures);
         recyclerView.setHasFixedSize(true);
@@ -81,10 +86,10 @@ public class Departures extends AppCompatActivity {
 
         // specify an adapter with data to display
         if (query.hasClickableItems()) {
-            adapter = new BusStopDeparturesAdapter(departures, R.layout.busstop_departure_list_item_caret);
+            adapter = query.getAdapter(); //new BusStopDeparturesAdapter(new ArrayList<>(), R.layout.busstop_departure_list_item_caret);
             recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(this, recyclerView, query.getOnItemTouchListener(this, adapter)));
         } else {
-            adapter = new BusStopDeparturesAdapter(departures);
+            adapter = query.getAdapter(); //new BusStopDeparturesAdapter(new ArrayList<>());
         }
 
         if(query.hasHighlighted()){
@@ -92,7 +97,7 @@ public class Departures extends AppCompatActivity {
             adapter.highlightItem(query.getHighlighted());
         }
 
-        adapter.addLoading();
+        adapter.addLoading(query.getObjectClass());
 
         recyclerView.setAdapter(adapter);
 
@@ -123,21 +128,25 @@ public class Departures extends AppCompatActivity {
         }
     }
 
-    private List<BusStopDeparture> loadNextPageItems() {
+    private List<?> loadNextPageItems() {
         OfflineFilesManager ofm = new OfflineFilesManager(this);
         CISSqliteHelper helper = new CISSqliteHelper(ofm.getFilePath(OfflineFilesManager.SCHEDULE));
 
         return new ArrayList<>(query.exec(currentPage));
     }
 
-    private void processNextPageItems(List<BusStopDeparture> departures) {
+    private void processNextPageItems(List<?> departures) {
         page_size = departures.size();
 
         if (currentPage != PAGE_START || departures.isEmpty() || iSFirstLoad) adapter.removeLoading();
         adapter.addItems(departures);
 
+        if(iSFirstLoad && departures.isEmpty()){
+            noItemsText.setVisibility(View.VISIBLE);
+        }
+
         if (!departures.isEmpty() && query.isPaginable()) {
-            adapter.addLoading();
+            adapter.addLoading(query.getObjectClass());
         } else {
             isLastPage = true;
         }
@@ -153,6 +162,8 @@ public class Departures extends AppCompatActivity {
                 layoutManager.scrollToPositionWithOffset(highlighted.get(0), 20);
             }
         }
+
+        iSFirstLoad = false;
     }
 
     private void loadNextPage() {
@@ -170,15 +181,15 @@ public class Departures extends AppCompatActivity {
         return true;
     }
 
-    private class Task extends AsyncTask<Integer, Integer, List<BusStopDeparture>>{
+    private class Task extends AsyncTask<Integer, Integer, List<?>>{
 
         @Override
-        protected List<BusStopDeparture> doInBackground(Integer... ints) {
+        protected List<?> doInBackground(Integer... ints) {
             return loadNextPageItems();
         }
 
         @Override
-        protected void onPostExecute(List<BusStopDeparture> departures) {
+        protected void onPostExecute(List<?> departures) {
             processNextPageItems(departures);
         }
     }

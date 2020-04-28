@@ -56,7 +56,7 @@ public class ActualDepartureQuery extends ScheduleQuery implements EsriBusStopsD
     }
 
     @Override
-    public void populateView() {
+    protected void populateView() {
         loadBusStops();
     }
 

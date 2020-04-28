@@ -23,12 +23,14 @@ import java.util.Date;
 import java.util.List;
 
 public class DepartureQuery extends ScheduleQuery implements Serializable {
-    private SQLiteDatabase mDb = null;
-    private List<Integer> stopIDs;
-    private List<String> stopNames;
-    private List<Integer> lineIDs;
-    private List<String> lineNames;
+    private CISSqliteHelper mDb = null;
+    //private List<Integer> stopIDs;
+    //private List<String> stopNames;
+    //private List<Integer> lineIDs;
+    //private List<String> lineNames;
     private DepartureQueryModel model;
+    private List<BusStop> busStops;
+    private List<Line> lines;
 
 
     static final int DEFAULT_PAGE_SIZE = 10;
@@ -46,7 +48,7 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
         initModelValues();
     }
 
-    public DepartureQuery(Context context, DepartureQueryModel model){
+    public DepartureQuery(Context context, DepartureQueryModel model) {
         super(context);
         //mContext = context;
         this.model = model;
@@ -54,23 +56,23 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
         initLocalVars();
     }
 
-    private void initLocalVars(){
-        stopNames = new ArrayList<String>();
-        stopIDs = new ArrayList<Integer>();
-        lineNames = new ArrayList<String>();
-        lineIDs = new ArrayList<Integer>();
+    private void initLocalVars() {
+        //stopNames = new ArrayList<>();
+        //stopIDs = new ArrayList<>();
+        //lineNames = new ArrayList<>();
+        //lineIDs = new ArrayList<>();
+        busStops = new ArrayList<>();
+        lines = new ArrayList<>();
     }
 
-    private void initModelValues(){
+    private void initModelValues() {
         setDate(getInitialDate());
         setTime(getInitialTime());
         setPageSize(DEFAULT_PAGE_SIZE);
         setLineId(ALL_LINES);
     }
 
-    public List<Integer> getStopIDs() {
-        return stopIDs;
-    }
+    //public List<Integer> getStopIDs() {return stopIDs;}
 
     public int getStopId() {
         return model.getStopId();
@@ -126,10 +128,10 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
         return true;
     }
 
-    private SQLiteDatabase getDb() {
+    private CISSqliteHelper getDb() {
         if (mDb == null) {
             OfflineFilesManager ofm = new OfflineFilesManager(mContext);
-            mDb = SQLiteDatabase.openDatabase(ofm.getFilePath(OfflineFilesManager.SCHEDULE), null, SQLiteDatabase.OPEN_READONLY);
+            mDb = new CISSqliteHelper(ofm.getFilePath(OfflineFilesManager.SCHEDULE));
         }
 
         return mDb;
@@ -145,26 +147,17 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
     }
 
     @Override
-    public void populateView() {
-        Cursor cursor = getDb().query("STOPS", new String[]{"stopID", "stopName"}, null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            stopNames.add(cursor.getString(cursor.getColumnIndex("stopName")));
-            stopIDs.add(cursor.getInt(cursor.getColumnIndex("stopID")));
-        }
-        notifyBusStopsChanged();
-        cursor.close();
+    protected void populateView() {
+        CISSqliteHelper helper = getDb();
+
+        busStops = helper.getBusStops();
 
         //add option to display all lines
-        lineIDs.add(ALL_LINES);
-        lineNames.add("Všechny linky");
+        lines.add(new Line(ALL_LINES, "Všechny linky"));
 
-        cursor = getDb().query("LINES", new String[]{"lineID", "lineName"}, null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            lineNames.add(cursor.getString(cursor.getColumnIndex("lineName")));
-            lineIDs.add(cursor.getInt(cursor.getColumnIndex("lineID")));
-        }
+        lines.addAll(helper.getLines());
         notifyLinesChanged();
-        cursor.close();
+        //cursor.close();
     }
 
     public String getName() {
@@ -176,62 +169,12 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
     }
 
     public List<BusStopDeparture> exec(int page) {
-        OfflineFilesManager ofm = new OfflineFilesManager(mContext);
-        CISSqliteHelper helper = new CISSqliteHelper(ofm.getFilePath(OfflineFilesManager.SCHEDULE));
+        CISSqliteHelper helper = getDb();
 
-        //ArrayList<BusStopDeparture> departures = new ArrayList<>(helper.getDepartures(50428, new String[]{"00002", "00009"}, "2020-03-23", "00:00", -1, 0, 10));
+        //get corresponding codes for given date
+        String[] codes = getCodesForDate(getDate());
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getDateFormat());
-        Calendar calendar = Calendar.getInstance();
-        try {
-            calendar.setTime(simpleDateFormat.parse(getDate()));
-        } catch (Exception e){
-
-        }
-
-        /*for(int i = 20; i <= 26; i++) {
-            //calendar.set(2020, 4, i);
-            calendar.set(2020, 3, i);
-            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            Log.d("dbg calendar", "day: " + dayOfWeek);
-        }*/
-
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        String[] codes = new String[2];
-
-        switch (dayOfWeek) {
-            case 2:
-                codes[0] = "00002";
-                codes[1] = "00005";
-                break;
-            case 3:
-                codes[0] = "00002";
-                codes[1] = "00006";
-                break;
-            case 4:
-                codes[0] = "00002";
-                codes[1] = "00007";
-                break;
-            case 5:
-                codes[0] = "00002";
-                codes[1] = "00008";
-                break;
-            case 6:
-                codes[0] = "00002";
-                codes[1] = "00009";
-                break;
-            case 7:
-                codes[1] = "00003";
-                break;
-            case 1:
-                codes[1] = "00004";
-                break;
-        }
-
-        //Log.d("dbg", getStopId() + ", " + codes[1] + ", " + getDate() + ", " + getTime() + ", " + getLineId() + ", " + getPageSize());
         ArrayList<BusStopDeparture> departures = new ArrayList<>(helper.getDepartures(getStopId(), codes, getDate(), getTime(), getLineId(), page, getPageSize()));
-
-        //helper.close();
 
         return departures;
     }
@@ -241,10 +184,10 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
         Bundle bundle = new Bundle();
         Intent intent;
 
-        ArrayList<BusStopDeparture> departures = new ArrayList<>(exec(0));
+        //ArrayList<BusStopDeparture> departures = new ArrayList<>(exec(0));
 
         intent = new Intent(mContext.getApplicationContext(), Departures.class);
-        bundle.putSerializable("com.android.dpmjinfo.departures", departures);
+        //bundle.putSerializable("com.android.dpmjinfo.departures", departures);
         bundle.putSerializable("com.android.dpmjinfo.queryModel", model);
         bundle.putSerializable("com.android.dpmjinfo.queryClass", this.getClass().getSimpleName());
         intent.putExtras(bundle);
@@ -265,14 +208,6 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
         return format.format(date);
     }
 
-    public String getDateFormat() {
-        return "yyyy-MM-dd";
-    }
-
-    public String getTimeFormat() {
-        return "HH:mm";
-    }
-
     private void notifyBusStopsChanged() {
         view.onBusStopsUpdated();
     }
@@ -281,12 +216,12 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
         view.onLinesUpdated();
     }
 
-    public List<String> getBusStops() {
-        return stopNames;
+    public List<Line> getLines() {
+        return lines;
     }
 
-    public List<String> getLines() {
-        return lineNames;
+    public List<BusStop> getBusStops() {
+        return busStops;
     }
 
     public LineSelectedListener getLineSelectedListener() {
@@ -294,30 +229,12 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
     }
 
     private void onLineSelected(int position) {
-        setLineId(lineIDs.get(position));
+        int lineId = lines.get(position).getLineId();
+        setLineId(lineId);
 
-        final String sql = "SELECT S.stopID, S.stopName FROM LINESTOPS L INNER JOIN STOPS S ON L.stopID=S.stopID WHERE L.lineID=?";
+        busStops.clear();
 
-        Cursor cursor;
-        if (lineIDs.get(position) != ALL_LINES) {
-            cursor = getDb().rawQuery(sql, new String[]{lineIDs.get(position).toString()});
-        } else {
-            cursor = getDb().query("STOPS", new String[]{"stopID", "stopName"}, null, null, null, null, null, null);
-        }
-
-        if (!cursor.moveToNext()) {
-            Log.d("dbg", "No result");
-            return;
-        }
-
-        stopIDs.clear();
-        stopNames.clear();
-
-        do {
-            stopIDs.add(cursor.getInt(cursor.getColumnIndex("stopID")));
-            stopNames.add(cursor.getString(cursor.getColumnIndex("stopName")));
-        }
-        while (cursor.moveToNext());
+        busStops.addAll(getDb().getBusStopsOfLine(lineId));
 
         notifyBusStopsChanged();
     }
@@ -327,7 +244,8 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
     }
 
     private void onStopSelected(int position) {
-        setStopId(stopIDs.get(position));
+        setStopId(busStops.get(position).getCISId());
+        Log.d("dbg selection", "" + position + " : " + busStops.get(position).getCISId());
     }
 
     private class LineSelectedListener implements AdapterView.OnItemSelectedListener {

@@ -5,50 +5,43 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import java.util.ArrayList;
 
-public class DepartureQueryView extends FrameLayout {
-    DepartureQuery query;
+public class ConnectionQueryView extends FrameLayout {
+    ConnectionQuery query;
 
     EditText dateField;
     EditText timeField;
-    SearchableSpinner stopsSpinner;
-    SearchableSpinner lineSpinner;
-    //StringArraySpinnerAdapter stopAdapter;
-    LineSpinnerAdapter lineAdapter;
-    BusStopSpinnerAdapter busStopAdapter;
+    SearchableSpinner startStopsSpinner;
+    SearchableSpinner targetStopSpinner;
+    BusStopSpinnerAdapter startStopAdapter;
+    BusStopSpinnerAdapter targetStopAdapter;
 
-    public DepartureQueryView(DepartureQuery q, Context context, AttributeSet attrs) {
+    public ConnectionQueryView(ConnectionQuery q, Context context, AttributeSet attrs) {
         super(context, attrs);
         query = q;
         initView();
     }
 
-    public DepartureQueryView(DepartureQuery q, Context context) {
+    public ConnectionQueryView(ConnectionQuery q, Context context) {
         super(context);
         query = q;
         initView();
     }
 
-    public DepartureQueryView(DepartureQuery q, Context context, AttributeSet attrs, int defStyle) {
+    public ConnectionQueryView(ConnectionQuery q, Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         query = q;
         initView();
     }
 
     private void initView() {
-        inflate(getContext(), R.layout.departure_query, this);
+        inflate(getContext(), R.layout.connection_query, this);
 
         dateField = findViewById(R.id.date);
         timeField = findViewById(R.id.time);
@@ -59,8 +52,8 @@ public class DepartureQueryView extends FrameLayout {
         dateField.setText(query.getInitialDate());
         timeField.setText(query.getInitialTime());
 
-        DatePickerUniversal datePicker = new DatePickerUniversal(dateField, ScheduleQuery.getDateFormat());
-        TimePickerUniversal timePicker = new TimePickerUniversal(timeField, ScheduleQuery.getTimeFormat());
+        DatePickerUniversal datePicker = new DatePickerUniversal(dateField, query.getDateFormat());
+        TimePickerUniversal timePicker = new TimePickerUniversal(timeField, query.getTimeFormat());
 
         timeField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -96,32 +89,31 @@ public class DepartureQueryView extends FrameLayout {
             }
         });
 
-        stopsSpinner = findViewById(R.id.stop);
-        lineSpinner = findViewById(R.id.line);
+        startStopsSpinner = findViewById(R.id.startStop);
+        targetStopSpinner = findViewById(R.id.targetStop);
 
-        busStopAdapter = new BusStopSpinnerAdapter(getContext(), R.layout.spinner_item, new ArrayList<BusStop>());
-        //stopAdapter = new StringArraySpinnerAdapter(getContext(), new ArrayList<String>());
-        stopsSpinner.setAdapter(busStopAdapter);
+        startStopAdapter = new BusStopSpinnerAdapter(getContext(), R.layout.spinner_item, new ArrayList<BusStop>());
+        startStopsSpinner.setAdapter(startStopAdapter);
 
-        lineAdapter = new LineSpinnerAdapter(getContext(), R.layout.spinner_item, new ArrayList<Line>());
-        lineSpinner.setAdapter(lineAdapter);
+        targetStopAdapter = new BusStopSpinnerAdapter(getContext(), R.layout.spinner_item, new ArrayList<BusStop>());
+        targetStopSpinner.setAdapter(targetStopAdapter);
 
-        lineSpinner.setOnItemSelectedListener(query.getLineSelectedListener());
+        targetStopSpinner.setOnItemSelectedListener(query.getTargetStopSelectedListener());
 
-        stopsSpinner.setOnItemSelectedListener(query.getStopSelectedListener());
+        startStopsSpinner.setOnItemSelectedListener(query.getStartStopSelectedListener());
     }
 
-    public void onBusStopsUpdated() {
-        busStopAdapter.clear();
-        busStopAdapter.addAll(query.getBusStops());
+    public void onStartStopsUpdated(){
+        startStopAdapter.clear();
+        startStopAdapter.addAll(query.getStartStops());
 
-        stopsSpinner.setSelection(0);
+        startStopsSpinner.setSelection(0);
     }
 
-    public void onLinesUpdated() {
-        lineAdapter.clear();
-        lineAdapter.addAll(query.getLines());
+    public void onTargetStopsUpdated(){
+        targetStopAdapter.clear();
+        targetStopAdapter.addAll(query.getTargetStops());
 
-        lineSpinner.setSelection(0);
+        targetStopSpinner.setSelection(0);
     }
 }

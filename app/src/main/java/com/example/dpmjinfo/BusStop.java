@@ -8,6 +8,8 @@ import com.esri.arcgisruntime.layers.IntegratedMeshLayer;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.crypto.Cipher;
+
 /* AVAILABLE FIELDS FROM ARCGIS FEATURE
 objectid ( type: esriFieldTypeOID, alias: OBJECTID )
 odkaz ( type: esriFieldTypeString, alias: ODKAZ, length: 100 )
@@ -59,6 +61,8 @@ public class BusStop implements Serializable {
     private String wheelchairAccessible;
     private Short elp_id;
 
+    private int CISId;
+
     public BusStop(Feature f) {
         Map<String, Object> attributes = f.getAttributes();
         href = (String) attributes.get("odkaz");
@@ -66,6 +70,11 @@ public class BusStop implements Serializable {
         name = (String) attributes.get("nazev");
         wheelchairAccessible = (String) attributes.get("bezbar");
         elp_id = (Short) attributes.get("elp_id");
+    }
+
+    public BusStop(int CISId, String name) {
+        this.CISId = CISId;
+        this.name = name;
     }
 
     public String getHref() {
@@ -156,15 +165,33 @@ public class BusStop implements Serializable {
         this.elp_id = elp_id;
     }
 
+    public int getCISId() {
+        return CISId;
+    }
+
+    public void setCISId(int CISId) {
+        this.CISId = CISId;
+    }
+
     @Override
     public int hashCode() {
-        return getElp_id();
+        if (elp_id != null) {
+            return getElp_id();
+        } else {
+            return getCISId();
+        }
     }
 
     @Override
     public boolean equals(Object other) {
-        if (getElp_id() == ((BusStop) other).getElp_id()) {
-            return true;
+        if (elp_id != null) {
+            if (getElp_id() == ((BusStop) other).getElp_id()) {
+                return true;
+            }
+        } else {
+            if (getCISId() == ((BusStop) other).getCISId()) {
+                return true;
+            }
         }
 
         return false;

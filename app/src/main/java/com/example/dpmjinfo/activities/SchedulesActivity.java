@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.dpmjinfo.ActualDepartureQuery;
+import com.example.dpmjinfo.ConnectionQuery;
 import com.example.dpmjinfo.DepartureQuery;
 import com.example.dpmjinfo.MainActivity;
 import com.example.dpmjinfo.OfflineFileManagerRequestsDoneListener;
@@ -125,7 +126,7 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
                     searchButton.setVisibility(View.VISIBLE);
                     downloadText.setVisibility(View.GONE);
                     downloadButton.setVisibility(View.GONE);
-                    scheduleQuery.populateView();
+                    scheduleQuery.populate();
                     scheduleQuery.show();
                 }
                 Log.d("dbg", "onItemSelected");
@@ -157,6 +158,7 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
         }
 
         registerScheduleQuery(new DepartureQuery(this/*, db*/));
+        registerScheduleQuery(new ConnectionQuery(this/*, db*/));
     }
 
     private boolean isNetworkAvailable() {
@@ -224,7 +226,7 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
                 downloadText.setVisibility(View.GONE);
 
                 ScheduleQuery scheduleQuery = (ScheduleQuery) querySpinner.getSelectedItem();
-                scheduleQuery.populateView();
+                scheduleQuery.populate();
                 scheduleQuery.show();
             } else {
                 //download canceled or failed

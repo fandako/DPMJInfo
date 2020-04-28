@@ -13,15 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BusStopDeparturesAdapter extends RecyclerView.Adapter<BusStopDeparturesAdapter.BaseViewHolder> {
-    List<BusStopDeparture> mDepartures;
-    List<BusStopDeparture> highlightedItems;
-    int layout;
-    int highlightedLayout;
+public class BusStopDeparturesAdapter extends /*RecyclerView.Adapter<BusStopDeparturesAdapter.BaseViewHolder>*/ BaseAdapter<BusStopDeparturesAdapter.BaseViewHolder, BusStopDeparture> {
+    private List<BusStopDeparture> mDepartures;
+    //private List<BusStopDeparture> highlightedItems;
+    private int layout;
+    private int highlightedLayout;
     private static final int VIEW_TYPE_LOADING = 0;
     private static final int VIEW_TYPE_NORMAL = 1;
     private static final int VIEW_TYPE_HIGHLIGHTED = 2;
-    private boolean isLoaderVisible = false;
+    //private boolean isLoaderVisible = false;
 
     public BusStopDeparturesAdapter(List<BusStopDeparture> departures) {
         this.mDepartures = departures;
@@ -37,11 +37,11 @@ public class BusStopDeparturesAdapter extends RecyclerView.Adapter<BusStopDepart
         highlightedItems = new ArrayList<>();
     }
 
-    public void highlightItem(BusStopDeparture departure) {
+    /*public void highlightItem(BusStopDeparture departure) {
         highlightedItems.add(departure);
-        Log.d("dbg", "" + departure.getLineId() + " " + departure.getConnectionId() + " " + departure.getDeparture() + " " + departure.getName() + " " + departure.getLine());
+        //Log.d("dbg", "" + departure.getLineId() + " " + departure.getConnectionId() + " " + departure.getDeparture() + " " + departure.getName() + " " + departure.getLine());
 
-    }
+    }*/
 
     public List<Integer> getHighlightedPositions() {
         ArrayList<Integer> result = new ArrayList<>();
@@ -91,9 +91,9 @@ public class BusStopDeparturesAdapter extends RecyclerView.Adapter<BusStopDepart
     @Override
     public int getItemViewType(int position) {
         if (isLoaderVisible) {
-            return position == mDepartures.size() - 1 ? VIEW_TYPE_LOADING : VIEW_TYPE_NORMAL;
+            return position == /*mDepartures.size() - 1*/ items.size() - 1 ? VIEW_TYPE_LOADING : VIEW_TYPE_NORMAL;
         } else {
-            Log.d("dbg", "" + getItem(position).getLineId() + " " + getItem(position).getConnectionId() + " " + getItem(position).getDeparture()+ " " + getItem(position).getName() + " " + getItem(position).getLine());
+            //Log.d("dbg", "" + getItem(position).getLineId() + " " + getItem(position).getConnectionId() + " " + getItem(position).getDeparture()+ " " + getItem(position).getName() + " " + getItem(position).getLine());
             boolean isOnSameLine = false;
             for (BusStopDeparture h:highlightedItems) {
                 if(h.isSameDepartureButWithTerminalStopName(getItem(position))){
@@ -109,7 +109,7 @@ public class BusStopDeparturesAdapter extends RecyclerView.Adapter<BusStopDepart
         }
     }
 
-    public void addItems(List<BusStopDeparture> postItems) {
+    /*public void addItems(List<BusStopDeparture> postItems) {
         mDepartures.addAll(postItems);
         notifyDataSetChanged();
     }
@@ -144,7 +144,7 @@ public class BusStopDeparturesAdapter extends RecyclerView.Adapter<BusStopDepart
     @Override
     public int getItemCount() {
         return mDepartures.size();
-    }
+    }*/
 
     public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
         private int mCurrentPosition;
@@ -184,7 +184,7 @@ public class BusStopDeparturesAdapter extends RecyclerView.Adapter<BusStopDepart
         public void onBind(int position) {
             super.onBind(position);
 
-            BusStopDeparture data = mDepartures.get(position);
+            BusStopDeparture data = items.get(position); //mDepartures.get(position);
             line.setText(data.getLine());
             name.setText(data.getName());
             departure.setText(data.getDeparture());

@@ -4,44 +4,36 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BusStopDeparturesAdapter extends /*RecyclerView.Adapter<BusStopDeparturesAdapter.BaseViewHolder>*/ BaseAdapter<BusStopDeparturesAdapter.BaseViewHolder, BusStopDeparture> {
-    private List<BusStopDeparture> mDepartures;
-    //private List<BusStopDeparture> highlightedItems;
-    private int layout;
-    private int highlightedLayout;
-    private static final int VIEW_TYPE_LOADING = 0;
-    private static final int VIEW_TYPE_NORMAL = 1;
-    private static final int VIEW_TYPE_HIGHLIGHTED = 2;
-    //private boolean isLoaderVisible = false;
+public class BusStopDeparturesAdapter extends  BaseAdapter<BaseAdapter.BaseViewHolder, BusStopDeparture> {
 
     public BusStopDeparturesAdapter(List<BusStopDeparture> departures) {
-        this.mDepartures = departures;
+        super();
+
+        items = departures;
         layout = R.layout.busstop_departure_list_item;
         highlightedLayout = R.layout.busstop_departure_list_item_highlighted;
         highlightedItems = new ArrayList<>();
     }
 
     public BusStopDeparturesAdapter(List<BusStopDeparture> departures, @LayoutRes int layout) {
-        this.mDepartures = departures;
+        super();
+
+        items = departures;
         this.layout = layout;
         highlightedLayout = R.layout.busstop_departure_list_item_highlighted;
         highlightedItems = new ArrayList<>();
     }
-
-    /*public void highlightItem(BusStopDeparture departure) {
-        highlightedItems.add(departure);
-        //Log.d("dbg", "" + departure.getLineId() + " " + departure.getConnectionId() + " " + departure.getDeparture() + " " + departure.getName() + " " + departure.getLine());
-
-    }*/
 
     public List<Integer> getHighlightedPositions() {
         ArrayList<Integer> result = new ArrayList<>();
@@ -58,15 +50,9 @@ public class BusStopDeparturesAdapter extends /*RecyclerView.Adapter<BusStopDepa
         return result;
     }
 
-    public List<BusStopDeparture> getDepartureList() {
-        return mDepartures;
-    }
-
+    @NonNull
     @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        /*View itemView = LayoutInflater.from(viewGroup.getContext())
-                .inflate(layout, viewGroup, false);
-        return new BaseViewHolder(*/
+    public BaseAdapter.BaseViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
                 switch (i) {
                     case VIEW_TYPE_NORMAL:
@@ -79,12 +65,12 @@ public class BusStopDeparturesAdapter extends /*RecyclerView.Adapter<BusStopDepa
                         return new ProgressHolder(
                                 LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_loading, viewGroup, false));
                     default:
-                        return null;
+                        throw new Error();
                 }
     }
 
     @Override
-    public void onBindViewHolder(BaseViewHolder viewHolder, int i) {
+    public void onBindViewHolder(BaseAdapter.BaseViewHolder viewHolder, int i) {
         viewHolder.onBind(i);
     }
 
@@ -101,7 +87,7 @@ public class BusStopDeparturesAdapter extends /*RecyclerView.Adapter<BusStopDepa
                     break;
                 }
             }
-            if(isOnSameLine/*highlightedItems.contains(getItem(position))*/){
+            if(isOnSameLine){
                 return VIEW_TYPE_HIGHLIGHTED;
             } else {
                 return VIEW_TYPE_NORMAL;
@@ -109,63 +95,7 @@ public class BusStopDeparturesAdapter extends /*RecyclerView.Adapter<BusStopDepa
         }
     }
 
-    /*public void addItems(List<BusStopDeparture> postItems) {
-        mDepartures.addAll(postItems);
-        notifyDataSetChanged();
-    }
-
-    public void addLoading() {
-        isLoaderVisible = true;
-        mDepartures.add(new BusStopDeparture("", "", ""));
-        notifyItemInserted(mDepartures.size() - 1);
-    }
-
-    public void removeLoading() {
-        isLoaderVisible = false;
-        if(!mDepartures.isEmpty()) {
-            int position = mDepartures.size() - 1;
-            BusStopDeparture item = getItem(position);
-            if (item != null) {
-                mDepartures.remove(position);
-                notifyItemRemoved(position);
-            }
-        }
-    }
-
-    BusStopDeparture getItem(int position) {
-        return mDepartures.get(position);
-    }
-
-    public void clear() {
-        mDepartures.clear();
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public int getItemCount() {
-        return mDepartures.size();
-    }*/
-
-    public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
-        private int mCurrentPosition;
-
-        public BaseViewHolder(View itemView) {
-            super(itemView);
-        }
-
-        protected abstract void clear();
-
-        public void onBind(int position) {
-            mCurrentPosition = position;
-            clear();
-        }
-
-        public int getCurrentPosition() {
-            return mCurrentPosition;
-        }
-    }
-
-    public class ViewHolder extends BaseViewHolder {
+    public class ViewHolder extends BaseAdapter.BaseViewHolder {
         TextView line, name, departure;
         LinearLayout parent;
 
@@ -188,16 +118,6 @@ public class BusStopDeparturesAdapter extends /*RecyclerView.Adapter<BusStopDepa
             line.setText(data.getLine());
             name.setText(data.getName());
             departure.setText(data.getDeparture());
-        }
-    }
-
-    public class ProgressHolder extends BaseViewHolder {
-        ProgressHolder(View itemView) {
-            super(itemView);
-        }
-
-        @Override
-        protected void clear() {
         }
     }
 }

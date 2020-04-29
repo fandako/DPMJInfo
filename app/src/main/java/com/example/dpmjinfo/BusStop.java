@@ -184,6 +184,10 @@ public class BusStop implements Serializable {
 
     @Override
     public boolean equals(Object other) {
+        if (other.getClass() != getClass()){
+            return false;
+        }
+
         if (elp_id != null) {
             if (getElp_id() == ((BusStop) other).getElp_id()) {
                 return true;

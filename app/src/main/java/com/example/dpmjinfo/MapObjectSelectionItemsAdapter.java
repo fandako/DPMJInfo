@@ -7,12 +7,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 public class MapObjectSelectionItemsAdapter extends RecyclerView.Adapter<MapObjectSelectionItemsAdapter.MyViewHolder> {
-    List<MapObjectSelectionItem> mObjects;
+    private List<MapObjectSelectionItem> mObjects;
     public MapObjectSelectionItemsAdapter(List<MapObjectSelectionItem> objects) {
         this.mObjects = objects;
     }
@@ -21,6 +22,7 @@ public class MapObjectSelectionItemsAdapter extends RecyclerView.Adapter<MapObje
         return mObjects;
     }
 
+    @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext())

@@ -29,9 +29,9 @@ import java.util.Observable;
 import java.util.Set;
 
 public class ActualDepartureQuery extends ScheduleQuery implements EsriBusStopsDoneLoadingListener{
-    Set<BusStop> busStops;
-    ActualDeparturesView view = null;
-    ActualDepartureQueryModel model;
+    private Set<BusStop> busStops;
+    private ActualDeparturesView view = null;
+    private ActualDepartureQueryModel model;
 
 
     public ActualDepartureQuery(Context context) {

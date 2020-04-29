@@ -11,7 +11,7 @@ import com.example.dpmjinfo.activities.Departures;
 import java.util.List;
 
 public class LineDetailQuery extends ScheduleQuery {
-    LineDetailQueryModel model;
+    private LineDetailQueryModel model;
 
     LineDetailQuery(Context context) {
         super(context);
@@ -40,12 +40,12 @@ public class LineDetailQuery extends ScheduleQuery {
     }
 
     @Override
-    public BusStopDeparture getHighlighted() {
+    public List<BusStopDeparture> getHighlighted() {
         return model.getHighlighted();
     }
 
-    public void setHighlighted(BusStopDeparture highlighted) {
-        model.setHighlighted(highlighted);
+    public void addHighlighted(BusStopDeparture highlighted) {
+        model.addHighlighted(highlighted);
     }
 
     @Override

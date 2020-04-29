@@ -11,8 +11,9 @@
 
         <TextView
             android:id="@+id/timeLabel"
+            android:labelFor="@id/time"
             style="@style/labelTextView"
-            android:text="Čas:" />
+            android:text="@string/departure_query_time_label" />
 
         <EditText
             android:id="@+id/time"
@@ -22,7 +23,8 @@
         <TextView
             android:id="@+id/dateLabel"
             style="@style/labelTextView"
-            android:text="Datum:" />
+            android:labelFor="@id/date"
+            android:text="@string/departure_query_date_label" />
 
         <EditText
             android:id="@+id/date"
@@ -32,7 +34,7 @@
         <TextView
             android:id="@+id/startStopLabel"
             style="@style/labelTextView"
-            android:text="Ze zastávky:" />
+            android:text="@string/connection_query_start_stop_label" />
 
         <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/startStop"
@@ -41,7 +43,7 @@
         <TextView
             android:id="@+id/targetStopLabel"
             style="@style/labelTextView"
-            android:text="Do zastávky:" />
+            android:text="@string/connection_query_target_stop_label" />
 
         <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/targetStop"

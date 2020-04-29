@@ -36,11 +36,11 @@ public class Line {
 
     @Override
     public boolean equals(Object other) {
-        if (getLineId() == ((Line) other).getLineId()) {
-            return true;
+        if(getClass() != other.getClass()){
+            return false;
         }
 
-        return false;
+        return getLineId() == ((Line) other).getLineId();
     }
 
     //has effect on how busStops are displayed in searchable spinner!!!

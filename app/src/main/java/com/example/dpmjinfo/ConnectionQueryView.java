@@ -52,8 +52,8 @@ public class ConnectionQueryView extends FrameLayout {
         dateField.setText(query.getInitialDate());
         timeField.setText(query.getInitialTime());
 
-        DatePickerUniversal datePicker = new DatePickerUniversal(dateField, query.getDateFormat());
-        TimePickerUniversal timePicker = new TimePickerUniversal(timeField, query.getTimeFormat());
+        DatePickerUniversal datePicker = new DatePickerUniversal(dateField, ScheduleQuery.getDateFormat());
+        TimePickerUniversal timePicker = new TimePickerUniversal(timeField, ScheduleQuery.getTimeFormat());
 
         timeField.addTextChangedListener(new TextWatcher() {
             @Override

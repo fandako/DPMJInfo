@@ -14,7 +14,7 @@
         <TextView
             android:id="@+id/elpStopLabel"
             style="@style/labelTextView"
-            android:text="Zastávka:" />
+            android:text="@string/departure_query_stop_label" />
 
         <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/elpStop"
@@ -46,6 +46,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/elpProgressBar"
         android:textAlignment="center"
-        android:text="Načítám zastávky" />
+        android:text="@string/departure_query_loading_stops" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

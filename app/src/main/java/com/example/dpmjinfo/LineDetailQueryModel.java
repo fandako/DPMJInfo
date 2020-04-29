@@ -1,9 +1,16 @@
 package com.example.dpmjinfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LineDetailQueryModel extends ScheduleQueryModel {
     private int lineId;
     private int connectionId;
-    private BusStopDeparture highlighted;
+    private List<BusStopDeparture> highlighted;
+
+    public LineDetailQueryModel(){
+        highlighted = new ArrayList<>();
+    }
 
     public int getLineId() {
         return lineId;
@@ -21,11 +28,11 @@ public class LineDetailQueryModel extends ScheduleQueryModel {
         this.connectionId = connectionId;
     }
 
-    public BusStopDeparture getHighlighted() {
+    public List<BusStopDeparture> getHighlighted() {
         return highlighted;
     }
 
-    public void setHighlighted(BusStopDeparture highlighted) {
-        this.highlighted = highlighted;
+    public void addHighlighted(BusStopDeparture highlighted) {
+        this.highlighted.add(highlighted);
     }
 }

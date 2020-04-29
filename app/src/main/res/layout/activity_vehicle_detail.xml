@@ -14,7 +14,7 @@
 
         <TextView
             android:id="@+id/lineLabel"
-            android:text="Linka:"
+            android:text="@string/vehicle_detail_line_label"
             style="@style/labelTextView" />
 
         <TextView
@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/terminalLabel"
-            android:text="Konečná stanice:"
+            android:text="@string/vehicle_detail_terminal_label"
             style="@style/labelTextView" />
 
         <TextView
@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/lastLabel"
-            android:text="Poslední stanice:"
+            android:text="@string/vehicle_detail_last_stop"
             style="@style/labelTextView" />
 
         <TextView
@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/delayLabel"
-            android:text="Zpoždení:"
+            android:text=""
             style="@style/labelTextView" />
 
         <TextView

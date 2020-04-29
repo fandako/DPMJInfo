@@ -44,10 +44,7 @@ public class ScheduleGraphNode implements Comparable<ScheduleGraphNode> {
             return false;
 
         ScheduleGraphNode other = (ScheduleGraphNode) obj;
-        if (getStopId() != other.getStopId())
-            return false;
-
-        return true;
+        return getStopId() == other.getStopId();
     }
 
     @Override

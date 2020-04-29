@@ -58,6 +58,8 @@ public class CISSqliteHelper {
             result.add(b);
         }
 
+        c.close();
+
         return result;
     }
 
@@ -80,6 +82,8 @@ public class CISSqliteHelper {
 
             result.add(b);
         }
+
+        c.close();
 
         return result;
     }

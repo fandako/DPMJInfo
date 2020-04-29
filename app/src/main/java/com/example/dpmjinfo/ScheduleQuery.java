@@ -7,17 +7,25 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public abstract class ScheduleQuery {
-    LayoutInflater mInflater;
+    private LayoutInflater mInflater;
     protected Context mContext;
-    View mView = null;
-    protected boolean isPopulated;
+    private View mView = null;
+    private boolean isPopulated;
 
     public ScheduleQuery(Context context) {
         mContext = context;
@@ -74,7 +82,7 @@ public abstract class ScheduleQuery {
         return false;
     }
 
-    protected boolean isPopulated() { return isPopulated; }
+    private boolean isPopulated() { return isPopulated; }
 
     public boolean isAsync() {
         return false;
@@ -84,8 +92,8 @@ public abstract class ScheduleQuery {
         return false;
     }
 
-    public BusStopDeparture getHighlighted() {
-        return null;
+    public List<?> getHighlighted() {
+        return new ArrayList<>();
     }
 
     public RecycleViewClickListener getOnItemTouchListener(Context context, RecyclerView.Adapter adapter) {
@@ -118,45 +126,132 @@ public abstract class ScheduleQuery {
         }
     }
 
-    public static String[] getCodesForDate(String date) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getDateFormat());
-        Calendar calendar = Calendar.getInstance();
+    //calculates date of easter sunday
+    public static DateTime getEasterDate(int year){
+        int a = year% 19;
+        int b = (int) Math.floor(year/100);
+        int c = year % 100;
+        int d = (int) Math.floor(b/4);
+        int e = b % 4;
+        int f = (int) Math.floor((b + 8) / 25);
+        int g = (int) Math.floor((b - f + 1) / 3);
+        int h = (19*a + b - d - g + 15) % 30;
+        int i = (int) Math.floor(c/4);
+        int k = c%4;
+        int L = (32 + 2*e + 2*i - h - k) % 7;
+        int m = (int) Math.floor((a + 11*h + 22*L) / 451);
+        int month = (int) Math.floor((h + L - 7*m + 114) / 31);
+        int day = (((h + L - (7*m) + 114) % 31) + 1);
 
-        //exception raised while parsing date -> cant recover without possible looping
-        try {
-            calendar.setTime(simpleDateFormat.parse(date));
-        } catch (Exception e) {
-            throw new Error();
+        //Log.d("dbg", day + "." + month + "." + year);
+        return new DateTime(year, month, day, 0, 0, 0, 0);
+
+        /*int a = year % 19;
+        int b = year >> 2;
+        int c = (b / 25) + 1;
+        int d = (c * 3) >> 2;
+        int e = ((a * 19) - ((c * 8 + 5) / 25) + d + 15) % 30;
+        e += (29578 - a - e * 32) >> 10;
+        e -= ((year % 7) + b - d + e + 2) % 7;
+        d = e >> 5;
+        int day = e - d * 31;
+        int month = d + 3;*/
+    }
+
+    public boolean checkIfDateIsHoliday(DateTime date){
+
+        int year = date.getYear();
+        DateTime easterSunday = getEasterDate(year);
+
+
+        //easter Monday
+        DateTime easterMonday = easterSunday.plusDays(1);
+        if(date.compareTo(easterMonday) == 0){
+            return true;
         }
 
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        //easter Friday
+        DateTime easterFriday = easterSunday.plusDays(-2);
+        if(date.compareTo(easterFriday) == 0){
+            return true;
+        }
+
+        //check for holidays which are not moveable (defined in csv file)
+        OfflineFilesManager ofm = new OfflineFilesManager(mContext);
+
+        String csvFile = ofm.getFilePath("calendar");
+        String line = "";
+        String cvsSplitBy = ";";
+        boolean firstLine = true;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+
+            while ((line = br.readLine()) != null) {
+
+                //skip csv header with column names
+                if(firstLine){
+                    firstLine = false;
+                    continue;
+                }
+
+                // use comma as separator
+                String[] values = line.split(cvsSplitBy);
+
+                if(date.getDayOfMonth() == Integer.parseInt(values[0]) && date.getMonthOfYear() == Integer.parseInt(values[1])){
+                    return true;
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public int getPageSize(){
+        return Integer.MAX_VALUE;
+    };
+
+    public String[] getCodesForDate(String date) {
         List<String> codes = new ArrayList<>();
 
+        DateTime dateTime = DateTime.parse(date, DateTimeFormat.forPattern(getDateFormat()));
+
+        int dayOfWeek = dateTime.getDayOfWeek(); //calendar.get(Calendar.DAY_OF_WEEK);
+
+        //check if date is holiday and return corresponding code
+        if(checkIfDateIsHoliday(dateTime)){
+            codes.add("+");
+            return codes.toArray(new String[0]);
+        }
+
+        //check what day of week the date is (codes 1..7 = Monday...Sunday, X = workdays)
         switch (dayOfWeek) {
-            case 2:
+            case 1:
                 codes.add("X");
                 codes.add("1");
                 break;
-            case 3:
+            case 2:
                 codes.add("X");
                 codes.add("2");
                 break;
-            case 4:
+            case 3:
                 codes.add("X");
                 codes.add("3");
                 break;
-            case 5:
+            case 4:
                 codes.add("X");
                 codes.add("4");
                 break;
-            case 6:
+            case 5:
                 codes.add("X");
                 codes.add("5");
                 break;
-            case 7:
+            case 6:
                 codes.add("6");
                 break;
-            case 1:
+            case 7:
                 codes.add("7");
                 break;
         }
@@ -173,7 +268,11 @@ public abstract class ScheduleQuery {
     }
 
     public BaseAdapter getAdapter(){
-        return new BusStopDeparturesAdapter(new ArrayList<>(), R.layout.busstop_departure_list_item_caret);
+        if(hasClickableItems()) {
+            return new BusStopDeparturesAdapter(new ArrayList<>(), R.layout.busstop_departure_list_item_caret);
+        } else {
+            return new BusStopDeparturesAdapter(new ArrayList<>(), R.layout.busstop_departure_list_item);
+        }
     }
 
     public Class getObjectClass(){

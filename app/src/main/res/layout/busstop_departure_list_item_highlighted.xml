@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:weightSum =" 1"
     android:layout_height="wrap_content"
-    android:background="#0071BC">
+    android:background="#C9F0FF">
 
         <TextView
             android:id="@+id/line"
@@ -12,28 +12,27 @@
             android:layout_height="70dp"
             android:layout_weight="0.15"
             android:gravity="center"
-            android:textSize="15sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="#fff"/>
+            style="@style/blueText"/>
 
         <TextView
             android:id="@+id/name"
             android:layout_width="0dp"
             android:layout_height="70dp"
             android:layout_weight="0.6"
-            android:gravity="left|center_vertical"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="#fff"/>
+            android:gravity="start|center_vertical"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/departure"
             android:layout_width="0dp"
             android:layout_height="70dp"
             android:layout_weight="0.25"
-            android:gravity="right|center_vertical"
-            android:paddingRight="15dp"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="#fff"/>
+            android:gravity="end|center_vertical"
+            android:paddingEnd="20dp"
+            android:paddingStart="10dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 </LinearLayout>

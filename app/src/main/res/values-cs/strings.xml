@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DPMJInfo</string>
+    <string name="no_items_found">Nebyly nalezeny žádné položky</string>
+    <string name="nameLabel">Název:</string>
+    <string name="bus_stop_detail_lines_label">Linky:</string>
+    <string name="wheelchair_accessible_label">Bezbariérová:</string>
+    <string name="bus_stop_detail_actual_actual_departures">Aktuální odjezdy:</string>
+    <string name="bus_stop_detail_loading_label">Načítám zastávky</string>
+    <string name="download_button_text">Stáhnout</string>
+    <string name="cancel_button_text">Zrušit</string>
+    <string name="map_cancel_filter">Zrušit filtr</string>
+    <string name="map_filter_button_text">Filtrovat</string>
+    <string name="map_functionality_description">Mapa zobrazuje aktuální polohu vozidel MHD v Jihlavě. Kliknutím na vozidlo se vám zobrazí informace o směru a případném zpoždění. Po přiblížení mapy se zobrazí také zastávky, u kterých je možné zjistit aktuální odejzdy (pro oba směry).</string>
+    <string name="bus">autobus</string>
+    <string name="trolleybus">trolejbus</string>
+    <string name="waiting_vehicle">čekající vozidlo</string>
+    <string name="created">Vytvořeno ve spolupráci s\nDopravním podnikem města Jihlavy a.s.\na\nodborem informatiky\nStatutárního města Jihlava</string>
+    <string name="search_for">Hledat:</string>
+    <string name="schedule_download_required_text">Pro zobrazení jízdních řádů je zapotřebí stáhnout soubor s jejich definicí</string>
+    <string name="search_button_text">Vyhledat</string>
+    <string name="vehicle_detail_line_label">Linka:</string>
+    <string name="vehicle_detail_terminal_label">Konečná stanice:</string>
+    <string name="vehicle_detail_last_stop">Poslední stanice:</string>
+    <string name="vehicle_detail_delay">Zpoždení:</string>
+    <string name="departure_query_stop_label">Zastávka:</string>
+    <string name="departure_query_loading_stops">Načítám zastávky</string>
+    <string name="departure_query_time_label">Čas:</string>
+    <string name="departure_query_date_label">Datum:</string>
+    <string name="connection_query_start_stop_label">Ze zastávky:</string>
+    <string name="connection_query_target_stop_label">Do zastávky:</string>
+    <string name="map_object_selection_image_contentDescription">Typ objektu</string>
+
+</resources>

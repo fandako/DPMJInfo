@@ -1,7 +1,7 @@
 package com.example.dpmjinfo;
 
 public class ActualDepartureQueryModel extends ScheduleQueryModel {
-    BusStop busStop;
+    private BusStop busStop;
 
     public BusStop getBusStop() {
         return busStop;

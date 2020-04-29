@@ -6,17 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".activities.DownloadActivity">
 
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/fileNameLabel"
-            style="@style/labelTextView"
-            android:text="Soubor:" />-->
-
         <TextView
             android:id="@+id/fileName"
             android:layout_width="match_parent"
@@ -24,18 +13,6 @@
             app:layout_constraintBottom_toTopOf="@id/progressBar"
             android:textAlignment="center"
             android:paddingBottom="20dp"/>
-
-        <!--<TextView
-            android:id="@+id/fileSizeLabel"
-            style="@style/labelTextView"
-            android:text="Velikost:" />
-
-        <TextView
-            android:id="@+id/fileSize"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>-->
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -67,7 +44,7 @@
         android:layout_height="wrap_content"
         android:background="#55F"
         android:padding="15dp"
-        android:text="Stáhnout"
+        android:text="@string/download_button_text"
         android:textColor="#FFF"
         android:visibility="invisible"
         android:textSize="18sp"
@@ -80,7 +57,7 @@
         android:layout_height="wrap_content"
         android:background="#55F"
         android:padding="15dp"
-        android:text="Zrušit"
+        android:text=""
         android:textColor="#FFF"
         android:textSize="18sp"
         android:textStyle="bold"

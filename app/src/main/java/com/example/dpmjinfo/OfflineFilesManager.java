@@ -10,6 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -28,11 +29,11 @@ import java.util.Stack;
 
 public class OfflineFilesManager implements Response.Listener<JSONObject>, Response.ErrorListener {
     private Stack<JsonObjectRequest> requests;
-    Hashtable<String, String> results;
-    RequestQueue queue;
-    OfflineFileManagerRequestsDoneListener doneListener;
-    Context mContext;
-    OfflineFileDb db = null;
+    private Hashtable<String, String> results;
+    private RequestQueue queue;
+    private OfflineFileManagerRequestsDoneListener doneListener;
+    private Context mContext;
+    private OfflineFileDb db = null;
 
     public final static String CALENDAR = "calendar";
     public final static String SCHEDULE = "schedule";
@@ -40,7 +41,7 @@ public class OfflineFilesManager implements Response.Listener<JSONObject>, Respo
 
     public OfflineFilesManager(Context context) {
         requests = new Stack<>();
-        results = new Hashtable();
+        results = new Hashtable<>();
         queue = Volley.newRequestQueue(context);
         mContext = context;
     }
@@ -67,10 +68,13 @@ public class OfflineFilesManager implements Response.Listener<JSONObject>, Respo
     }
 
     private String getCurrentDate() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
 
-        return dateFormat.format(date);
+        return dateFormat.format(date);*/
+        DateTime d = DateTime.now();
+
+        return d.toString(ScheduleQuery.getDateFormat());
     }
 
     private void checkForUpdate(String fileType) {

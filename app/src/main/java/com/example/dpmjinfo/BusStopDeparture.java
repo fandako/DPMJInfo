@@ -114,8 +114,6 @@ public class BusStopDeparture implements Serializable, Comparable<BusStopDepartu
         if(!getDeparture().equals(o.getDeparture())) return false;
         if(!getLine().equals(o.getLine())) return false;
         if(getLineId() != o.getLineId()) return false;
-        if(getConnectionId() != o.getConnectionId()) return false;
-
-        return true;
+        return getConnectionId() == o.getConnectionId();
     }
 }

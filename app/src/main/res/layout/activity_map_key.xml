@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         style="@style/labelTextView"
         android:textSize="18sp"
-        android:text="Mapa zobrazuje aktuální polohu vozidel MHD v Jihlavě. Kliknutím na vozidlo se vám zobrazí informace o směru a případném zpoždění. Po přiblížení mapy se zobrazí také zastávky, u kterých je možné zjistit aktuální odejzdy (pro oba směry)." />
+        android:text="@string/map_functionality_description" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/busIcon"
@@ -55,7 +55,7 @@
         style="@style/labelTextView"
         android:textSize="18sp"
         android:layout_marginTop="15dp"
-        android:text="autobus"
+        android:text="@string/bus"
         android:gravity="center"
         android:layout_marginStart="15dp" />
 
@@ -68,7 +68,7 @@
     style="@style/labelTextView"
     android:textSize="18sp"
     android:layout_marginTop="15dp"
-    android:text="trolejbus"
+    android:text="@string/trolleybus"
     android:gravity="center"
     android:layout_marginStart="15dp" />
 
@@ -81,7 +81,7 @@
         style="@style/labelTextView"
         android:textSize="18sp"
         android:layout_marginTop="15dp"
-        android:text="čekající vozidlo"
+        android:text=""
         android:gravity="center"
         android:layout_marginStart="15dp" />
 
@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         style="@style/labelTextView"
         android:textSize="18sp"
-        android:text="Vytvořeno ve spolupráci s\nDopravním podnikem města Jihlavy a.s.\na\nodborem informatiky\nStatutárního města Jihlava"
+        android:text="@string/created"
         android:gravity="center"
         android:layout_marginStart="15dp" />
 

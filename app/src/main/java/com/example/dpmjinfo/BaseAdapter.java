@@ -1,21 +1,29 @@
 package com.example.dpmjinfo;
 
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseAdapter<T extends BusStopDeparturesAdapter.BaseViewHolder, U> extends RecyclerView.Adapter<T> {
+public abstract class BaseAdapter<T extends BaseAdapter.BaseViewHolder, U> extends RecyclerView.Adapter<T> {
     protected List<U> items = new ArrayList<>();
     protected List<U> highlightedItems = new ArrayList<>();
     protected boolean isLoaderVisible;
+    protected int layout;
+    protected int highlightedLayout;
 
-    public void highlightItem(U item) {
-        highlightedItems.add(item);
+    protected static final int VIEW_TYPE_LOADING = 0;
+    protected static final int VIEW_TYPE_NORMAL = 1;
+    protected static final int VIEW_TYPE_HIGHLIGHTED = 2;
+
+    public void highlightItems(List<U> items) {
+        highlightedItems.addAll(items);
     }
 
     public abstract List<Integer> getHighlightedPositions();
@@ -30,7 +38,6 @@ public abstract class BaseAdapter<T extends BusStopDeparturesAdapter.BaseViewHol
         try {
             items.add(impl.getDeclaredConstructor().newInstance());
         } catch (Exception e){
-            Log.d("dbg", e.getMessage());
             throw new Error();
         }
 
@@ -66,5 +73,34 @@ public abstract class BaseAdapter<T extends BusStopDeparturesAdapter.BaseViewHol
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
+        private int mCurrentPosition;
+
+        public BaseViewHolder(View itemView) {
+            super(itemView);
+        }
+
+        protected abstract void clear();
+
+        public void onBind(int position) {
+            mCurrentPosition = position;
+            clear();
+        }
+
+        public int getCurrentPosition() {
+            return mCurrentPosition;
+        }
+    }
+
+    public class ProgressHolder extends BaseViewHolder {
+        ProgressHolder(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        protected void clear() {
+        }
     }
 }

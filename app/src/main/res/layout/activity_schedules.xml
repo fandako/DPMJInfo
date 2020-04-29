@@ -18,7 +18,7 @@
         <TextView
             android:id="@+id/queryTypeLabel"
             style="@style/labelTextView"
-            android:text="Typ dotazu:" />
+            android:text="@string/search_for" />
 
         <Spinner
             android:id="@+id/queryType"
@@ -39,15 +39,7 @@
         android:padding="15dp"
         android:paddingTop="0dp"
         app:layout_constraintTop_toBottomOf="@id/queryHeader">
-        <!--<include
-            layout="@layout/departure_query"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
-        <include
-            layout="@layout/actual_departures_query"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />-->
     </LinearLayout>
 
     <TextView
@@ -60,17 +52,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="15dp"
         android:textSize="18sp"
-        android:text="Pro zobrazení jízdních řádů je zapotřebí stáhnout soubor s jejich definicí"/>
+        android:text="@string/schedule_download_required_text"/>
 
     <Button
         android:id="@+id/button"
         android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#55F"
+        android:background="#024DA8"
         android:padding="15dp"
-        android:text="Vyhledat"
-        android:textColor="#FFF"
+        android:text="@string/search_button_text"
+        android:textColor="#FFFCF9"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -79,10 +71,10 @@
         android:id="@+id/download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#55F"
-        android:padding="15dp"
-        android:text="Stáhnout"
-        android:textColor="#FFF"
+        android:background="#024DA8"
+        android:padding="18dp"
+        android:text="@string/download_button_text"
+        android:textColor="#FFFCF9"
         android:visibility="invisible"
         android:textSize="18sp"
         android:textStyle="bold"

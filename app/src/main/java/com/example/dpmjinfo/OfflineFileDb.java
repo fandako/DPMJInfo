@@ -40,7 +40,11 @@ public class OfflineFileDb extends SQLiteOpenHelper {
             return "";
         }
 
-        return cursor.getString(cursor.getColumnIndex(KEY_PATH));
+        String path = cursor.getString(cursor.getColumnIndex(KEY_PATH));
+
+        cursor.close();
+
+        return path;
     }
 
     public long insertFile(String fileType, String path){

@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/nameLabel"
-            android:text="Název:"
+            android:text="@string/nameLabel"
             style="@style/labelTextView" />
 
         <TextView
@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/linesLabel"
-            android:text="Linky:"
+            android:text="@string/bus_stop_detail_lines_label"
             style="@style/labelTextView" />
 
         <TextView
@@ -34,7 +34,7 @@
 
         <TextView
             android:id="@+id/wheelchairAccessibleLabel"
-            android:text="Bezbariérová:"
+            android:text="@string/wheelchair_accessible_label"
             style="@style/labelTextView" />
 
         <TextView
@@ -43,10 +43,50 @@
 
         <TextView
             android:id="@+id/departuresLabel"
-            android:text="Aktuální odjezdy:"
+            android:text="@string/bus_stop_detail_actual_actual_departures"
             style="@style/labelTextView" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/noItemsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/no_items_found"
+        style="@style/labelTextView"
+        android:textSize="18dp"
+        android:textAlignment="center"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/elpProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:indeterminate="true"
+        android:max="100"
+        android:minWidth="120dp"
+        android:minHeight="120dp"
+        android:progress="1"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/elpProgressBarLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/elpProgressBar"
+        android:textAlignment="center"
+        android:text="@string/bus_stop_detail_loading_label" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

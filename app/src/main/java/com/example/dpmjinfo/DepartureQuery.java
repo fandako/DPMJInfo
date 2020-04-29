@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dpmjinfo.activities.Departures;
 
+import org.joda.time.DateTime;
+
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,10 +35,10 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
     private List<Line> lines;
 
 
-    static final int DEFAULT_PAGE_SIZE = 10;
+    private static final int DEFAULT_PAGE_SIZE = 10;
     static final int ALL_LINES = -1;
 
-    DepartureQueryView view;
+    private DepartureQueryView view;
 
     public DepartureQuery(Context context/*, SQLiteDatabase db*/) {
         super(context);
@@ -174,9 +176,7 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
         //get corresponding codes for given date
         String[] codes = getCodesForDate(getDate());
 
-        ArrayList<BusStopDeparture> departures = new ArrayList<>(helper.getDepartures(getStopId(), codes, getDate(), getTime(), getLineId(), page, getPageSize()));
-
-        return departures;
+        return new ArrayList<>(helper.getDepartures(getStopId(), codes, getDate(), getTime(), getLineId(), page, getPageSize()));
     }
 
     public void execAndDisplayResult() {
@@ -197,15 +197,21 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
     }
 
     public String getInitialDate() {
-        DateFormat format = new SimpleDateFormat(getDateFormat());
+        /*DateFormat format = new SimpleDateFormat(getDateFormat());
         Date date = new Date();
-        return format.format(date);
+        return format.format(date);*/
+        DateTime d = DateTime.now();
+
+        return d.toString(getDateFormat());
     }
 
     public String getInitialTime() {
-        DateFormat format = new SimpleDateFormat(getTimeFormat());
+        /*DateFormat format = new SimpleDateFormat(getTimeFormat());
         Date date = new Date();
-        return format.format(date);
+        return format.format(date);*/
+        DateTime d = DateTime.now();
+
+        return d.toString(getTimeFormat());
     }
 
     private void notifyBusStopsChanged() {
@@ -314,7 +320,7 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
             LineDetailQuery q = new LineDetailQuery(context);
             q.setConnectionId(departure.getConnectionId());
             q.setLineId(departure.getLineId());
-            q.setHighlighted(departure);
+            q.addHighlighted(departure);
 
             q.execAndDisplayResult();
         }

@@ -2,16 +2,17 @@ package com.example.dpmjinfo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.dpmjinfo.activities.Departures;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,11 +33,16 @@ public class ConnectionQuery extends ScheduleQuery {
     private List<BusStop> targetStops;
     private List<BusStop> startStops;
     private ConnectionQueryModel model;
+    private List<Connection> foundConnections;
+    private HashMap<Integer, HashMap<Integer, LinkedList<ScheduleGraphEdge>>> graphEdges = null;
+
+    private BusStop removedTargetStop = null;
+    private int removedTargetStopPosition;
 
 
-    static final int DEFAULT_PAGE_SIZE = 10;
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
-    ConnectionQueryView view;
+    private ConnectionQueryView view;
 
     public ConnectionQuery(Context context/*, SQLiteDatabase db*/) {
         super(context);
@@ -59,6 +65,7 @@ public class ConnectionQuery extends ScheduleQuery {
     private void initLocalVars() {
         targetStops = new ArrayList<>();
         startStops = new ArrayList<>();
+        foundConnections = new ArrayList<>();
     }
 
     private void initModelValues() {
@@ -99,6 +106,7 @@ public class ConnectionQuery extends ScheduleQuery {
         model.setTime(time);
     }
 
+    @Override
     public int getPageSize() {
         return model.getPageSize();
     }
@@ -109,12 +117,12 @@ public class ConnectionQuery extends ScheduleQuery {
 
     @Override
     public boolean isPaginable() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean hasClickableItems() {
-        return true;
+        return false;
     }
 
     protected View getQueryView() {
@@ -263,15 +271,50 @@ public class ConnectionQuery extends ScheduleQuery {
 
     }
 
-    public List<BusStopDeparture> exec(int page) {
-        OfflineFilesManager ofm = new OfflineFilesManager(mContext);
-        CISSqliteHelper helper = new CISSqliteHelper(ofm.getFilePath(OfflineFilesManager.SCHEDULE));
+    @Override
+    public Class getObjectClass() {
+        return Connection.class;
+    }
 
+    private HashMap<Integer, HashMap<Integer, LinkedList<ScheduleGraphEdge>>> getGraphEdges() {
         String[] codes = getCodesForDate(getDate());
+        if(graphEdges == null){
+            graphEdges = getDb().getScheduleGraph(getTime(), getDate(), codes);
+        }
 
-        HashMap<Integer, HashMap<Integer, LinkedList<ScheduleGraphEdge>>> graphEdges = helper.getScheduleGraph(getTime(), getDate(), codes);
+        return graphEdges;
+    }
 
-        return Dijkstra(graphEdges, getStartStopId(), getTargetStopId(), getTime());
+    public List<Connection> exec(int page) {
+        ArrayList<Connection> result = new ArrayList<>();
+        for(int i = 0; i < 10; i++){
+            if(foundConnections.isEmpty()){
+                Connection newConnection = new Connection(Dijkstra(getGraphEdges(), getStartStopId(), getTargetStopId(), getTime()));
+
+                //if Dijkstra returns empty array
+                if(newConnection.getDepartures().isEmpty()){
+                    break;
+                }
+
+                result.add(newConnection);
+                foundConnections.add(newConnection);
+            } else {
+                Connection lastConnection = foundConnections.get(foundConnections.size() - 1);
+                String lastFoundDeparture = lastConnection.get(0).getDeparture();
+
+                DateTime time = DateTime.parse(lastFoundDeparture, DateTimeFormat.forPattern(getTimeFormat()));
+                time = time.plusMinutes(1);
+
+                Connection newConnection = new Connection(Dijkstra(getGraphEdges(), getStartStopId(), getTargetStopId(), time.toString(getTimeFormat())/*format.format(c.getTime())*/));
+                if(newConnection.getDepartures().isEmpty()){
+                    break;
+                }
+                result.add(newConnection);
+                foundConnections.add(newConnection);
+            }
+        }
+
+        return result;
     }
 
     public void execAndDisplayResult() {
@@ -279,10 +322,11 @@ public class ConnectionQuery extends ScheduleQuery {
         Bundle bundle = new Bundle();
         Intent intent;
 
-        //ArrayList<BusStopDeparture> departures = new ArrayList<>(exec(0));
+        foundConnections.clear();
+        graphEdges = null;
 
         intent = new Intent(mContext.getApplicationContext(), Departures.class);
-        //bundle.putSerializable("com.android.dpmjinfo.departures", departures);
+
         bundle.putSerializable("com.android.dpmjinfo.queryModel", model);
         bundle.putSerializable("com.android.dpmjinfo.queryClass", this.getClass().getSimpleName());
         intent.putExtras(bundle);
@@ -292,15 +336,20 @@ public class ConnectionQuery extends ScheduleQuery {
     }
 
     public String getInitialDate() {
-        DateFormat format = new SimpleDateFormat(getDateFormat());
-        Date date = new Date();
-        return format.format(date);
+        /*DateFormat format = new SimpleDateFormat(getDateFormat());
+        Date date = new Date();*/
+        DateTime d = DateTime.now();
+
+        return d.toString(getDateFormat());//format.format(date);
     }
 
     public String getInitialTime() {
-        DateFormat format = new SimpleDateFormat(getTimeFormat());
+        /*DateFormat format = new SimpleDateFormat(getTimeFormat());
         Date date = new Date();
-        return format.format(date);
+        return format.format(date);*/
+        DateTime d = DateTime.now();
+
+        return d.toString(getTimeFormat());
     }
 
     private void notifyStartStopsChanged() {
@@ -319,12 +368,26 @@ public class ConnectionQuery extends ScheduleQuery {
         return targetStops;
     }
 
+    @Override
+    public BaseAdapter getAdapter() {
+        return new ConnectionAdapter(R.layout.connection_list_item);
+    }
+
     public StartStopSelectedListener getStartStopSelectedListener() {
         return new StartStopSelectedListener(this);
     }
 
     private void onStartStopSelected(int position) {
         setStartStopId(startStops.get(position).getCISId());
+
+        if(removedTargetStop != null){
+            targetStops.add(removedTargetStopPosition, removedTargetStop);
+        }
+
+        removedTargetStop = targetStops.get(position);
+        targetStops.remove(position);
+        removedTargetStopPosition = position;
+        notifyTargetStopsChanged();
     }
 
     public TargetStopSelectedListener getTargetStopSelectedListener() {
@@ -377,43 +440,5 @@ public class ConnectionQuery extends ScheduleQuery {
         required.add(OfflineFilesManager.CALENDAR);
 
         return required;
-    }
-
-    @Override
-    public RecycleViewClickListener getOnItemTouchListener(Context context, RecyclerView.Adapter adapter) {
-        return new OnDepartureTouchListener(context, (BusStopDeparturesAdapter) adapter);
-    }
-
-    private class OnDepartureTouchListener implements RecycleViewClickListener {
-
-        Context context;
-        BusStopDeparturesAdapter adapter;
-
-        OnDepartureTouchListener(Context context, BusStopDeparturesAdapter adapter) {
-            this.context = context;
-            this.adapter = adapter;
-        }
-
-
-        private void openDetail(int position) {
-            BusStopDeparture departure = adapter.getItem(position);
-
-            LineDetailQuery q = new LineDetailQuery(context);
-            q.setConnectionId(departure.getConnectionId());
-            q.setLineId(departure.getLineId());
-            q.setHighlighted(departure);
-
-            q.execAndDisplayResult();
-        }
-
-        @Override
-        public void onClick(View view, final int position) {
-            openDetail(position);
-        }
-
-        @Override
-        public void onLongClick(View view, int position) {
-            openDetail(position);
-        }
     }
 }

@@ -8,11 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.dpmjinfo.BusStop;
 import com.example.dpmjinfo.BusStopDeparture;
 import com.example.dpmjinfo.BusStopDeparturesAdapter;
+import com.example.dpmjinfo.BusStopSpinnerAdapter;
 import com.example.dpmjinfo.R;
 
 import org.jsoup.Jsoup;
@@ -26,7 +29,7 @@ import java.util.List;
 
 public class BusStopDetailActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter busStopDepartureAdapter;
+    private BusStopDeparturesAdapter busStopDepartureAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private TextView name;
     private TextView lines;
@@ -66,15 +69,24 @@ public class BusStopDetailActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter (see also next example)
-        busStopDepartureAdapter = new BusStopDeparturesAdapter(departureList);
+        busStopDepartureAdapter = new BusStopDeparturesAdapter(departureList, R.layout.busstop_departure_list_item);
         recyclerView.setAdapter(busStopDepartureAdapter);
 
         getDeparturesFromWeb(/*message.getElp_id()*/busStop);
     }
 
     void updateDepartures(List<BusStopDeparture> departures){
+        findViewById(R.id.elpProgressBar).setVisibility(View.GONE);
+        findViewById(R.id.elpProgressBarLabel).setVisibility(View.GONE);
+
+        if(departures.size() == 0){
+            findViewById(R.id.noItemsText).setVisibility(View.VISIBLE);
+            return;
+        }
+
         //add departures from web to UI dataset
-        departureList.addAll(departures);
+        busStopDepartureAdapter.addItems(departures);
+
         //notify about dataset change
         busStopDepartureAdapter.notifyDataSetChanged();
     }

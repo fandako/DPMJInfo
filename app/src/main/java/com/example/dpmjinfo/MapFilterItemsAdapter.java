@@ -6,13 +6,14 @@ import android.view.ViewGroup;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 public class MapFilterItemsAdapter extends RecyclerView.Adapter<MapFilterItemsAdapter.MyViewHolder> {
-    List<String> lines;
-    List<String> checkedLines;
+    private List<String> lines;
+    private List<String> checkedLines;
 
     public MapFilterItemsAdapter(List<String> lines, List<String> checkedLines) {
         this.lines = lines;
@@ -25,8 +26,8 @@ public class MapFilterItemsAdapter extends RecyclerView.Adapter<MapFilterItemsAd
 
     public List<String> getCheckedLines() { return checkedLines; }
 
-    public boolean removeCheckedLine(String line) {
-        return checkedLines.remove(line);
+    public void removeCheckedLine(String line) {
+        checkedLines.remove(line);
     }
 
     public void addCheckedLine(String line) {
@@ -37,6 +38,7 @@ public class MapFilterItemsAdapter extends RecyclerView.Adapter<MapFilterItemsAd
         return getLinesList().get(position);
     }
 
+    @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext())

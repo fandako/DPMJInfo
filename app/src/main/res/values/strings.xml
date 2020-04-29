@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">DPMJInfo</string>
+    <string name="no_items_found">No items found</string>
+    <string name="nameLabel">Name:</string>
+    <string name="bus_stop_detail_lines_label">Lines:</string>
+    <string name="wheelchair_accessible_label">Barrier-free:</string>
+    <string name="bus_stop_detail_actual_actual_departures">Actual departures:</string>
+    <string name="bus_stop_detail_loading_label">Loading departures</string>
+    <string name="download_button_text">Download</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="map_cancel_filter">Cancel filter</string>
+    <string name="map_filter_button_text">Filter</string>
+    <string name="map_functionality_description">Map displays position of Jihlava public transportation vehicles. Tap vehicle icon to display further info and eventual delay. Stops are displayed after zooming in enough. After tapping a stop details are displayed including actual departures.</string>
+    <string name="bus">bus</string>
+    <string name="trolleybus">trolleybus</string>
+    <string name="waiting_vehicle">waiting vehicle</string>
+    <string name="created">Developed in cooperation with\nDopravní podnik města Jihlavy a.s.\nand\nIT department of\nStatutory town Jihlava</string>
+    <string name="search_for">Search:</string>
+    <string name="schedule_download_required_text">Download of schedule definition is required</string>
+    <string name="search_button_text">Search</string>
+    <string name="vehicle_detail_line_label">Line:</string>
+    <string name="vehicle_detail_terminal_label">Terminal:</string>
+    <string name="vehicle_detail_last_stop">Last stop:</string>
+    <string name="vehicle_detail_delay">Delay:</string>
+    <string name="departure_query_stop_label">Stop:</string>
+    <string name="departure_query_loading_stops">Loading stops</string>
+    <string name="departure_query_time_label">Time:</string>
+    <string name="departure_query_date_label">Date:</string>
+    <string name="connection_query_start_stop_label">From stop:</string>
+    <string name="connection_query_target_stop_label">To stop:</string>
+    <string name="map_object_selection_image_contentDescription">Object type</string>
+
 </resources>

@@ -73,6 +73,7 @@ public class Departures extends AppCompatActivity {
         //page_size = departures.size();
 
         //page_size = departures.size();
+        page_size = query.getPageSize();
 
         noItemsText = findViewById(R.id.noItemsText);
 
@@ -94,7 +95,7 @@ public class Departures extends AppCompatActivity {
 
         if(query.hasHighlighted()){
             Log.d("dbg", "has highlighted");
-            adapter.highlightItem(query.getHighlighted());
+            adapter.highlightItems(query.getHighlighted());
         }
 
         adapter.addLoading(query.getObjectClass());
@@ -107,9 +108,11 @@ public class Departures extends AppCompatActivity {
             recyclerView.addOnScrollListener(new PaginationListener(layoutManager, page_size) {
                 @Override
                 protected void loadMoreItems() {
-                    isLoading = true;
-                    currentPage++;
-                    loadNextPage();
+                    if(!isLoading) {
+                        isLoading = true;
+                        currentPage++;
+                        loadNextPage();
+                    }
                     //new Task().execute(0);
                 }
 
@@ -131,12 +134,13 @@ public class Departures extends AppCompatActivity {
     private List<?> loadNextPageItems() {
         OfflineFilesManager ofm = new OfflineFilesManager(this);
         CISSqliteHelper helper = new CISSqliteHelper(ofm.getFilePath(OfflineFilesManager.SCHEDULE));
-
+        Log.d("dbg", "load next page");
         return new ArrayList<>(query.exec(currentPage));
     }
 
     private void processNextPageItems(List<?> departures) {
         page_size = departures.size();
+        Log.d("dbg", "page size: " + page_size);
 
         if (currentPage != PAGE_START || departures.isEmpty() || iSFirstLoad) adapter.removeLoading();
         adapter.addItems(departures);
@@ -150,7 +154,6 @@ public class Departures extends AppCompatActivity {
         } else {
             isLastPage = true;
         }
-        isLoading = false;
 
         //if processing data from first load operation on  query with highlighted item/s
         if(iSFirstLoad && query.hasHighlighted()){
@@ -164,6 +167,7 @@ public class Departures extends AppCompatActivity {
         }
 
         iSFirstLoad = false;
+        isLoading = false;
     }
 
     private void loadNextPage() {

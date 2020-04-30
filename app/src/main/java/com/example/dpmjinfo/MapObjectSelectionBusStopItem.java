@@ -12,7 +12,7 @@ public class MapObjectSelectionBusStopItem extends MapObjectSelectionItem {
 
     @Override
     public Integer getIconDrawableID() {
-        return R.drawable.bus_stop;
+        return R.mipmap.bus_stop;
     }
 
     @Override

@@ -155,7 +155,7 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
         busStops = helper.getBusStops();
 
         //add option to display all lines
-        lines.add(new Line(ALL_LINES, "Všechny linky"));
+        lines.add(new Line(ALL_LINES, mContext.getString(R.string.departure_query_all_lines)));
 
         lines.addAll(helper.getLines());
         notifyLinesChanged();
@@ -163,7 +163,7 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
     }
 
     public String getName() {
-        return "Odjezdy";
+        return mContext.getString(R.string.departure_query_title);
     }
 
     protected void initView(View v) {

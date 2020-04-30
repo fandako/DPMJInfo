@@ -21,7 +21,7 @@ public class VehicleDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_detail);
 
-        getSupportActionBar().setTitle("Detail vozu");
+        getSupportActionBar().setTitle(getResources().getString(R.string.vehicle_detail_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
@@ -36,7 +36,7 @@ public class VehicleDetailActivity extends AppCompatActivity {
         delayLabel = findViewById(R.id.delayLabel);
 
         if(vehicle.isWaiting()){
-            delayLabel.setText("Čas do odjezdu:");
+            delayLabel.setText(getResources().getString(R.string.vehicle_detail_time_to_departure_label));
         }
 
         line.setText(vehicle.getLine());
@@ -44,7 +44,7 @@ public class VehicleDetailActivity extends AppCompatActivity {
         lastStop.setText(vehicle.getLastStop());
 
         if(vehicle.getDelayInMins() <= 0 && !vehicle.isWaiting()){
-            delay.setText("bez zpoždění");
+            delay.setText(getResources().getString(R.string.vehicle_detail_without_delay));
         }else {
             delay.setText(String.format("%d min", Math.abs(vehicle.getDelayInMins().intValue())));
         }

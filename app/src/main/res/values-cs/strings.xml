@@ -30,5 +30,28 @@
     <string name="connection_query_start_stop_label">Ze zastávky:</string>
     <string name="connection_query_target_stop_label">Do zastávky:</string>
     <string name="map_object_selection_image_contentDescription">Typ objektu</string>
+    <string name="vehicle_detail_title">Detail vozu</string>
+    <string name="vehicle_detail_time_to_departure_label">Čas do odjezdu:</string>
+    <string name="vehicle_detail_without_delay">bez zpoždění</string>
+    <string name="map_icon_title">Mapa</string>
+    <string name="percent">%1$d %%</string>
+    <string name="download_progress">Soubor %1$d/%2$d</string>
+    <string name="actual_departures_title">Aktuální odjezdy</string>
+    <string name="bus_stop_detail_title">Detail zastávky</string>
+    <string name="connection_query_title">Spojení</string>
+    <string name="departure_query_title">Odjezdy</string>
+    <string name="departure_query_all_lines">Všechny linky"</string>
+    <string name="download_activity_title">Stahování</string>
+    <string name="connection_detail_query_title">Detail spoje</string>
+    <string name="map_object_selection_title">Výběr objektu</string>
+    <string name="no_internet_connection_alert_message">Není připojení k internetu</string>
+    <string name="download_error_alert_title">Chyba stahování</string>
+    <string name="no_internet_connection_ok_button_text">OK</string>
+    <string name="download_error_alert_message">Při stahování došlo k chybě</string>
+    <string name="update_available_alert_message">Je k dispozici nová verze jizdních řádů. Stáhnout Nyní?</string>
+    <string name="update_available_alert_title">Aktualizace</string>
+    <string name="update_available_alert_ok_button_text">Stáhnout</string>
+    <string name="update_available_alert_cancel_button_text">Nyní ne</string>
+
 
 </resources>

@@ -61,7 +61,7 @@ public class ActualDepartureQuery extends ScheduleQuery implements EsriBusStopsD
     }
 
     public String getName(){
-        return "Aktuální odjezdy";
+        return mContext.getString(R.string.actual_departures_title);
     }
 
     @Override

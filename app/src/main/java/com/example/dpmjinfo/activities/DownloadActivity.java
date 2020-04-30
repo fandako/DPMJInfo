@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 
 public class DownloadActivity extends AppCompatActivity {
 
@@ -119,7 +120,7 @@ public class DownloadActivity extends AppCompatActivity {
             int percentage = (int) ((progress * 100 / size) );
 
             //progressBar.setProgress(percentage);
-            progressText.setText(percentage + "%");
+            progressText.setText(getResources().getString(R.string.percent, percentage));
             // do whatever you need with the progress
         } while (cursor.moveToNext());
         cursor.close();
@@ -168,7 +169,7 @@ public class DownloadActivity extends AppCompatActivity {
 
         ActionBar bar = getSupportActionBar();
 
-        bar.setTitle("Stahování");
+        bar.setTitle(getString(R.string.download_activity_title));
         bar.setDisplayHomeAsUpEnabled(true);
 
         fileNameField = findViewById(R.id.fileName);
@@ -218,7 +219,7 @@ public class DownloadActivity extends AppCompatActivity {
         downloadFileTypes = downloadUrls.keySet().toArray();
         ofm = new OfflineFilesManager(this);
 
-        fileNameField.setText("Soubor " + downloadCnt + "/" + downloadCnt);
+        fileNameField.setText(getString(R.string.download_progress, downloadedCnt, downloadCnt));
 
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -234,7 +235,7 @@ public class DownloadActivity extends AppCompatActivity {
         if(downloadedCnt.equals(downloadCnt)){
             complete();
         } else {
-            fileNameField.setText("Soubor " + downloadCnt + "/" + downloadCnt);
+            fileNameField.setText(getString(R.string.download_progress, downloadedCnt, downloadCnt));
             progressBar.setProgress(0);
             downloadFile(downloadUrls.get(downloadFileTypes[downloadedCnt]));
         }
@@ -267,9 +268,9 @@ public class DownloadActivity extends AppCompatActivity {
             //Set the title of this download, to be displayed in notifications (if enabled).
             request.setTitle(fileName);
             //Set a description of this download, to be displayed in notifications (if enabled)
-            request.setDescription("Downloding...");
+            request.setDescription("Downloading...");
             request.setMimeType("application/octet-stream");
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
             request.setDestinationUri(Uri.fromFile(file));// Uri of the destination file
             request.allowScanningByMediaScanner();
 

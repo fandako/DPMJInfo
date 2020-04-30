@@ -23,7 +23,7 @@
         app:layout_constraintTop_toBottomOf="@id/mapKeyText"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="15dp"
-        android:src="@drawable/bus"
+        android:src="@mipmap/bus"
         android:rotation="90" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/busIcon"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="15dp"
-        android:src="@drawable/trolleybus"
+        android:src="@mipmap/trolleybus"
         android:rotation="90" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@id/trolleybusIcon"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="15dp"
-        android:src="@drawable/waiting"
+        android:src="@mipmap/waiting"
         android:rotation="90" />
 
     <androidx.appcompat.widget.AppCompatTextView

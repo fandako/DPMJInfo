@@ -28,6 +28,7 @@ import com.example.dpmjinfo.ScheduleQuery;
 import com.example.dpmjinfo.ScheduleQueryModel;
 
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +95,6 @@ public class Departures extends AppCompatActivity {
         }
 
         if(query.hasHighlighted()){
-            Log.d("dbg", "has highlighted");
             adapter.highlightItems(query.getHighlighted());
         }
 
@@ -173,7 +173,7 @@ public class Departures extends AppCompatActivity {
     private void loadNextPage() {
         //if query is async, use async Task to load items
         if(query.isAsync()){
-            new Task().execute(0);
+            new Task(this).execute(0);
         } else {
             processNextPageItems(loadNextPageItems());
         }
@@ -185,16 +185,31 @@ public class Departures extends AppCompatActivity {
         return true;
     }
 
-    private class Task extends AsyncTask<Integer, Integer, List<?>>{
+    private static class Task extends AsyncTask<Integer, Integer, List<?>>{
+
+        private WeakReference<Departures> activityReference;
+
+        public Task(Departures context) {
+            activityReference = new WeakReference<>(context);
+        }
 
         @Override
         protected List<?> doInBackground(Integer... ints) {
-            return loadNextPageItems();
+
+            // get a reference to the activity if it is still there
+            Departures activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return new ArrayList<>();
+
+            return activity.loadNextPageItems();
         }
 
         @Override
         protected void onPostExecute(List<?> departures) {
-            processNextPageItems(departures);
+            // get a reference to the activity if it is still there
+            Departures activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
+            activity.processNextPageItems(departures);
         }
     }
 }

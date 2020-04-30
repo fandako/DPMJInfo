@@ -38,6 +38,6 @@
             android:layout_width="0dp"
             android:layout_height="70dp"
             android:layout_weight="0.10"
-            android:src="@drawable/caret_right"/>
+            android:src="@mipmap/caret_right"/>
 
 </LinearLayout>

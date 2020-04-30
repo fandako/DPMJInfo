@@ -80,9 +80,9 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
                 } else {
                     alertBuilder = new AlertDialog.Builder(getApplicationContext());
                     alertBuilder
-                            .setMessage("Není připojení k internetu")
-                            .setTitle("Chyba stahování")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            .setMessage(getString(R.string.no_internet_connection_alert_message))
+                            .setTitle(getString(R.string.download_error_alert_title))
+                            .setPositiveButton(getString(R.string.no_internet_connection_ok_button_text), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
@@ -217,6 +217,7 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         // Check which request it is that we're responding to
         if (requestCode == DOWNLOAD_REQUEST) {
             if (resultCode == RESULT_OK) {
@@ -232,8 +233,8 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
                 //download canceled or failed
                 alertBuilder = new AlertDialog.Builder(this);
                 alertBuilder
-                        .setMessage("Při stahování došlo k chybě")
-                        .setTitle("Chyba stahování")
+                        .setMessage(getString(R.string.download_error_alert_message))
+                        .setTitle(getString(R.string.download_error_alert_title))
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -264,9 +265,9 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
             //download canceled or failed
             alertBuilder = new AlertDialog.Builder(this);
             alertBuilder
-                    .setMessage("Je k dispozici nová verze jizdních řádů. Stáhnout Nyní?")
-                    .setTitle("Aktualizace")
-                    .setPositiveButton("Stáhnout", new DialogInterface.OnClickListener() {
+                    .setMessage(getString(R.string.update_available_alert_message))
+                    .setTitle(getString(R.string.update_available_alert_title))
+                    .setPositiveButton(getString(R.string.update_available_alert_ok_button_text), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             OfflineFilesManager ofm = new OfflineFilesManager(getApplicationContext());
@@ -278,7 +279,7 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
                             startActivityForResult(intent, DOWNLOAD_REQUEST);
                         }
                     })
-                    .setNeutralButton("Nyní ne", new DialogInterface.OnClickListener() {
+                    .setNeutralButton(getString(R.string.update_available_alert_cancel_button_text), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();

@@ -5,6 +5,6 @@
         android:id="@+id/action_map"
         android:orderInCategory="200"
         app:showAsAction="always"
-        android:icon="@drawable/map_icon"
-        android:title="Mapa"/>
+        android:icon="@mipmap/map_icon"
+        android:title="@string/map_icon_title"/>
 </menu>

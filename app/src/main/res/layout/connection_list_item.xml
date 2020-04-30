@@ -30,7 +30,7 @@
             app:layout_constraintStart_toEndOf="@id/connectionDeparture"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@drawable/arrow_right"
+            android:src="@mipmap/arrow_right"
             android:scaleX="0.5"
             android:scaleY="0.5" />
 

@@ -439,8 +439,8 @@ public class MainActivity extends AppCompatActivity implements OfflineFileManage
             // add to map view
             mMapView.getGraphicsOverlays().add(vehicleInfoOverlay);
 
-            ServiceFeatureTable serviceFeatureTable6 = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/1");
-            FeatureLayer vehiclesOnLine2 = new FeatureLayer(serviceFeatureTable6);
+            /*ServiceFeatureTable serviceFeatureTable6 = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/1");
+            FeatureLayer vehiclesOnLine2 = new FeatureLayer(serviceFeatureTable6);*/
 
             serviceFeatureTable2 = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/6");
             FeatureLayer vehiclesOnLine = new FeatureLayer(serviceFeatureTable2);
@@ -455,14 +455,14 @@ public class MainActivity extends AppCompatActivity implements OfflineFileManage
 
             map.getOperationalLayers().add(vehiclesOnLine);
 
-            ServiceFeatureTable serviceFeatureTable4 = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/2");
+            /*ServiceFeatureTable serviceFeatureTable4 = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/2");
             // create the feature layer using the service feature table
             serviceFeatureTable4.setRequestConfiguration(new RequestConfiguration());
             FeatureLayer vehiclesWaiting = new FeatureLayer(serviceFeatureTable4);
 
-            map.getOperationalLayers().add(vehiclesWaiting);
+            map.getOperationalLayers().add(vehiclesWaiting);*/
 
-            ServiceFeatureTable serviceFeatureTable3 = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/3");
+            ServiceFeatureTable serviceFeatureTable3 = new ServiceFeatureTable(getString(R.string.gis_url_stops));
             // create the feature layer using the service feature table
             FeatureLayer stops = new FeatureLayer(serviceFeatureTable3);
 
@@ -470,7 +470,7 @@ public class MainActivity extends AppCompatActivity implements OfflineFileManage
             map.getOperationalLayers().add(stops);
             mMapView.setOnTouchListener(new IdentifyFeatureLayerTouchListener(this, mMapView, stops, vehiclesOverlay));
 
-            ServiceFeatureTable serviceFeatureTable5 = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/4");
+            ServiceFeatureTable serviceFeatureTable5 = new ServiceFeatureTable(getString(R.string.gis_url_lines_map));
             // create the feature layer using the service feature table
             linesMap = new FeatureLayer(serviceFeatureTable5);
 
@@ -478,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements OfflineFileManage
 
             map.getOperationalLayers().add(linesMap);
 
-            ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/5");
+            ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(getString(R.string.gis_url_lines)); //"https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/5"
             // create the feature layer using the service feature table
             serviceFeatureTable.setRequestConfiguration(new RequestConfiguration());
 
@@ -573,12 +573,12 @@ public class MainActivity extends AppCompatActivity implements OfflineFileManage
                     }
 
                     if (tmpVehicle.isWaiting()){
-                        vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) Objects.requireNonNull(getDrawable(R.drawable.waiting)));
+                        vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) Objects.requireNonNull(getDrawable(R.mipmap.waiting)));
                     }else {
                         if (tmpVehicle.getType().compareTo("autobus") == 0) {
-                            vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) Objects.requireNonNull(getDrawable(R.drawable.bus)));
+                            vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) Objects.requireNonNull(getDrawable(R.mipmap.bus)));
                         } else {
-                            vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) Objects.requireNonNull(getDrawable(R.drawable.trolleybus)));
+                            vehicleSymbolFuture = PictureMarkerSymbol.createAsync((BitmapDrawable) Objects.requireNonNull(getDrawable(R.mipmap.trolleybus)));
                         }
                     }
 
@@ -661,6 +661,7 @@ public class MainActivity extends AppCompatActivity implements OfflineFileManage
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         // Check which request it is that we're responding to
         if (requestCode == FILTER_REQUEST) {
             if (resultCode == RESULT_OK) {

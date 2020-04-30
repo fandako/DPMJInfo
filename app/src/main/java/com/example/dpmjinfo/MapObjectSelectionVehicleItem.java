@@ -11,7 +11,7 @@ public class MapObjectSelectionVehicleItem extends MapObjectSelectionItem {
 
     @Override
     public Integer getIconDrawableID() {
-        return R.drawable.bus_icon;
+        return R.mipmap.bus_icon;
     }
 
     @Override

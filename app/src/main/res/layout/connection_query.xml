@@ -7,7 +7,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/timeLabel"
@@ -18,7 +20,8 @@
         <EditText
             android:id="@+id/time"
             android:inputType="none"
-            style="@style/valueTextView"/>
+            style="@style/valueTextView"
+            android:importantForAutofill="no"/>
 
         <TextView
             android:id="@+id/dateLabel"
@@ -29,7 +32,8 @@
         <EditText
             android:id="@+id/date"
             android:inputType="none"
-            style="@style/valueTextView"/>
+            style="@style/valueTextView"
+            android:importantForAutofill="no"/>
 
         <TextView
             android:id="@+id/startStopLabel"

@@ -41,7 +41,7 @@ public class BusStopDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_stop_detail);
 
-        getSupportActionBar().setTitle("Detail zastávky");
+        getSupportActionBar().setTitle(getString(R.string.bus_stop_detail_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get the Intent that started this activity and extract the string
@@ -84,10 +84,10 @@ public class BusStopDetailActivity extends AppCompatActivity {
             return;
         }
 
-        //add departures from web to UI dataset
+        //add departures from web to UI data set
         busStopDepartureAdapter.addItems(departures);
 
-        //notify about dataset change
+        //notify about data set change
         busStopDepartureAdapter.notifyDataSetChanged();
     }
 

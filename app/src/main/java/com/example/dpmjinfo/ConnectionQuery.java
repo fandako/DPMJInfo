@@ -154,7 +154,7 @@ public class ConnectionQuery extends ScheduleQuery {
     }
 
     public String getName() {
-        return "Spojení";
+        return mContext.getString(R.string.connection_query_title);
     }
 
     protected void initView(View v) {

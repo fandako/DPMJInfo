@@ -13,7 +13,7 @@
         android:layout_weight="0.15"
         android:gravity="center"
         android:padding="13dp"
-        tools:srcCompat="@drawable/bus_stop"
+        tools:srcCompat="@mipmap/bus_stop"
         android:contentDescription="@string/map_object_selection_image_contentDescription"/>
 
     <TextView

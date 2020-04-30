@@ -66,7 +66,7 @@ public class LineDetailQuery extends ScheduleQuery {
 
     @Override
     public String getName() {
-        return "Detail spoje";
+        return mContext.getString(R.string.connection_detail_query_title);
     }
 
     @Override

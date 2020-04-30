@@ -117,6 +117,8 @@ public class CISSqliteHelper {
             result.add(l);
         }
 
+        c.close();
+
         return result;
     }
 

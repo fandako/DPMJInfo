@@ -20,7 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.Departures"></activity>
+        <activity android:name=".activities.Departures">
+            <!-- EMPTY -->
+        </activity>
         <activity android:name=".activities.DownloadActivity" />
         <activity
             android:name=".activities.SchedulesActivity"

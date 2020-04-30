@@ -36,7 +36,7 @@ public class MapObjectSelectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map_object_selection);
 
         //change activity title
-        getSupportActionBar().setTitle("Výběr objektu");
+        getSupportActionBar().setTitle(getString(R.string.map_object_selection_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get the Intent that started this activity and extract the required data

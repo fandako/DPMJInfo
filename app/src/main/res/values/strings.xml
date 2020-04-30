@@ -29,5 +29,27 @@
     <string name="connection_query_start_stop_label">From stop:</string>
     <string name="connection_query_target_stop_label">To stop:</string>
     <string name="map_object_selection_image_contentDescription">Object type</string>
+    <string name="vehicle_detail_title">Vehicle detail</string>
+    <string name="vehicle_detail_time_to_departure_label">Time to departure:</string>
+    <string name="vehicle_detail_without_delay">no delay</string>
+    <string name="map_icon_title">Map</string>
+    <string name="percent">%1$d %%</string>
+    <string name="download_progress">File %1$d/%2$d</string>
+    <string name="actual_departures_title">Actual departures</string>
+    <string name="bus_stop_detail_title">Stop detail</string>
+    <string name="connection_query_title">Connections</string>
+    <string name="departure_query_title">Departures</string>
+    <string name="departure_query_all_lines">All lines"</string>
+    <string name="download_activity_title">Download</string>
+    <string name="connection_detail_query_title">Connection detail</string>
+    <string name="map_object_selection_title">Object selection</string>
+    <string name="no_internet_connection_alert_message">No internet connection available</string>
+    <string name="download_error_alert_title">Download error</string>
+    <string name="no_internet_connection_ok_button_text">OK</string>
+    <string name="download_error_alert_message">Error occurred during download</string>
+    <string name="update_available_alert_message">New schedule definition update is available. Download now?</string>
+    <string name="update_available_alert_title">Update</string>
+    <string name="update_available_alert_ok_button_text">Download</string>
+    <string name="update_available_alert_cancel_button_text">Not now</string>
 
 </resources>

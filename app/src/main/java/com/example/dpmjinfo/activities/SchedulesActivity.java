@@ -40,6 +40,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.TooManyListenersException;
 
 /**
  * Main screen activity. Displays queries selection and UI elements to set individual parameters of these queries.
@@ -145,7 +146,11 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
                     }
                 }
 
-                q.execAndDisplayResult();
+                if(q.isReady()) {
+                    q.execAndDisplayResult();
+                } else {
+                    Toast.makeText(SchedulesActivity.this, getString(R.string.query_not_populated_toast), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

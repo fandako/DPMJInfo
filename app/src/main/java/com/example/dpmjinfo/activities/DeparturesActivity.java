@@ -257,7 +257,7 @@ public class DeparturesActivity extends AppCompatActivity {
         if (id == R.id.action_add_to_favourite) {
             OfflineFileDb db = new OfflineFileDb(this);
 
-            long res = db.saveFavourite(query);
+            long res = db.saveFavourite(ScheduleQuery.getQueryFromSerializedModel(this, query.getClass().getSimpleName(), query.getModelForFavourite()));
 
             if(res > 0){
                 Toast.makeText(this, getString(R.string.added_to_favourite_toast), Toast.LENGTH_SHORT).show();

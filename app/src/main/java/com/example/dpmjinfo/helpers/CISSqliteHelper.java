@@ -2,6 +2,7 @@ package com.example.dpmjinfo.helpers;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.dpmjinfo.BusStop;
@@ -23,7 +24,7 @@ import java.util.List;
  * class for queries on locally stored sqlite database file with schedule (departures, lines, stops, ...)
  */
 public class CISSqliteHelper {
-    private SQLiteDatabase db;
+    private SQLiteDatabase db = null;
 
     /**
      *
@@ -59,11 +60,11 @@ public class CISSqliteHelper {
     public List<BusStop> getBusStops() {
         final String sql = "SELECT \n" +
                 "  S.stopID, " +
-                "  S.stopName, " +
-                "  C.lineCount " +
+                "  S.stopName " +
+                //"  C.lineCount " +
                 "FROM " +
                 "  STOPS S " +
-                "  JOIN(" +
+                /*"  JOIN(" +
                 "    SELECT " +
                 "      stopID, " +
                 "      count(lineID) AS lineCount " +
@@ -71,9 +72,9 @@ public class CISSqliteHelper {
                 "      LINESTOPS " +
                 "    GROUP BY " +
                 "      stopID" +
-                "  ) C ON C.stopID = S.stopID " +
+                "  ) C ON C.stopID = S.stopID " +*/
                 "ORDER BY " +
-                "  C.lineCount DESC";
+                "  S.stopName";
 
         ArrayList<BusStop> result = new ArrayList<>();
 
@@ -131,7 +132,7 @@ public class CISSqliteHelper {
                 "  L.lineName " +
                 "FROM " +
                 "  LINES L " +
-                "  JOIN (" +
+                /*"  JOIN (" +
                 "    SELECT " +
                 "      lineID, " +
                 "      count(connectionID) AS connectionCount " +
@@ -139,9 +140,10 @@ public class CISSqliteHelper {
                 "      DEPARTURES " +
                 "    GROUP BY " +
                 "      lineID" +
-                "  ) CC ON CC.lineID = L.lineID " +
+                "  ) CC ON CC.lineID = L.lineID " +*/
                 "ORDER BY " +
-                "  CC.connectionCount DESC";
+                "L.lineName";
+                //"  CC.connectionCount DESC";
 
         ArrayList<Line> result = new ArrayList<>();
 
@@ -263,7 +265,7 @@ public class CISSqliteHelper {
         if (pageSize != -1) {
             departureSelection += "LIMIT " + currentPage * pageSize + ", " + pageSize;
         }
-        String sql = "SELECT RESD.lineID, RESD.connectionID, RESD.departure, RESD.lineName, SA.stopName, SA.stopID, RESD.arrival FROM (" +
+        String sql = "SELECT RESD.lineID AS lineID, RESD.connectionID AS connectionID, RESD.departure AS departure, RESD.lineName AS lineName, SA.stopName AS stopName, SA.stopID AS stopID, RESD.arrival as arrival FROM (" +
                 departureSelection
                 + ") RESD " +
                 "JOIN (SELECT lineID, connectionID, rateID, stopID FROM DEPARTURES WHERE arrival<>'') T ON T.lineID=RESD.lineID AND T.connectionID=RESD.connectionID " +
@@ -631,7 +633,14 @@ public class CISSqliteHelper {
         return result;
     }
 
-    public void close() {
+    private void close() {
         db.close();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+
+        close();
     }
 }

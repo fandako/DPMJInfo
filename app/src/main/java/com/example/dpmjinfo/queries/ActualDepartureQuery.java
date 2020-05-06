@@ -19,21 +19,29 @@ import com.example.dpmjinfo.R;
 import com.example.dpmjinfo.activities.DeparturesActivity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * query object for querying actual departures
  */
 public class ActualDepartureQuery extends ScheduleQuery implements EsriBusStopsDoneLoadingListener {
-    private Set<BusStop> busStops;
+    private SortedSet<BusStop> busStops;
     private ActualDeparturesView view = null;
     //private ActualDepartureQueryModel model;
 
     public ActualDepartureQuery(Context context) {
         super(context);
-        busStops = new HashSet<BusStop>();
+        busStops = new TreeSet<BusStop>(new Comparator<BusStop>() {
+            @Override
+            public int compare(BusStop o1, BusStop o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         model = new ActualDepartureQueryModel();
     }
 
@@ -43,8 +51,18 @@ public class ActualDepartureQuery extends ScheduleQuery implements EsriBusStopsD
 
     public ActualDepartureQuery(Context context, ActualDepartureQueryModel model) {
         super(context);
-        busStops = new HashSet<BusStop>();
+        busStops = new TreeSet<BusStop>(new Comparator<BusStop>() {
+            @Override
+            public int compare(BusStop o1, BusStop o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         this.model = model;
+    }
+
+    @Override
+    public ScheduleQueryModel getModelForFavourite() {
+        return getModel();
     }
 
     @Override
@@ -132,6 +150,11 @@ public class ActualDepartureQuery extends ScheduleQuery implements EsriBusStopsD
     public void esriBusStopsDoneLoading(List<BusStop> busStops) {
         this.busStops.addAll(busStops);
         notifyBusStopsChanged();
+
+        if(!busStops.isEmpty()){
+            getModel().setBusStop(busStops.get(0));
+            isReady = true;
+        }
     }
 
     /**

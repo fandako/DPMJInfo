@@ -55,6 +55,8 @@ import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.IdentifyGraphicsOverlayResult;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.portal.Portal;
+import com.esri.arcgisruntime.portal.PortalItem;
 import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.TextSymbol;
 import com.example.dpmjinfo.BusStop;
@@ -337,19 +339,6 @@ public class MapActivity extends AppCompatActivity implements OfflineFileManager
 
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         //downloadBasemap();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-            return;
-        }
-        setupLocationManager();
     }
 
     @Override
@@ -425,6 +414,12 @@ public class MapActivity extends AppCompatActivity implements OfflineFileManager
 
     private void setupMap() {
         if (mMapView != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            } else {
+                setupLocationManager();
+            }
+
             /*ArcGISMap map = new ArcGISMap(Basemap.Type.TOPOGRAPHIC, 49.400433, -15.588519, 10);
 
             ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable("https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/5");
@@ -482,7 +477,11 @@ public class MapActivity extends AppCompatActivity implements OfflineFileManager
                 });
                 map = new ArcGISMap(new Basemap(localTiledLayer));
             } else {
-                map = new ArcGISMap(Basemap.Type.TOPOGRAPHIC, 49.400433, -15.588519, 10);
+                //map = new ArcGISMap(Basemap.Type.TOPOGRAPHIC, 49.400433, -15.588519, 10);
+                String itemId =  "de45809a789d42219be78f9d96a7e217";
+                Portal portal = new Portal("https://www.arcgis.com", false);
+                PortalItem portalItem = new PortalItem(portal, itemId);
+                map = new ArcGISMap(portalItem);
             }
 
             // create overlay to contain vehicle graphic

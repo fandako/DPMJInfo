@@ -40,6 +40,7 @@ public class ScheduleQuery {
     private View mView = null;
     private boolean isPopulated;
     protected ScheduleQueryModel model;
+    protected boolean isReady = false;
 
     public ScheduleQuery(){}
 
@@ -47,6 +48,10 @@ public class ScheduleQuery {
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         isPopulated = false;
+    }
+
+    public boolean isReady() {
+        return isReady;
     }
 
     public ScheduleQueryModel getModel() {
@@ -171,7 +176,7 @@ public class ScheduleQuery {
      * indicates whether query view has been already populated
      * @return
      */
-    private boolean isPopulated() { return isPopulated; }
+    public boolean isPopulated() { return isPopulated; }
 
     /**
      * indicates whether query should be loaded asynchronously
@@ -211,6 +216,14 @@ public class ScheduleQuery {
      */
     public boolean showAddToFavourite() {
         return getModel().isShowAddToFavourite();
+    }
+
+    /**
+     * get model to be saved when query saving query as favourite
+     * @return model
+     */
+    public ScheduleQueryModel getModelForFavourite(){
+        return null;
     }
 
     /**

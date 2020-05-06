@@ -85,15 +85,28 @@ public class ConnectionQuery extends ScheduleQuery {
 
     @Override
     public void intiForFavourite() {
-        setDate(DateTime.now().toString(getDateFormat()));
+        DateTime d = DateTime.now();
+
+        setDate(d.toString(getDateFormat()));
+        setTime(d.toString(getTimeFormat()));
         getModel().setShowAddToFavourite(false);
+    }
+
+    @Override
+    public ScheduleQueryModel getModelForFavourite() {
+        ConnectionQueryModel m = new ConnectionQueryModel();
+        m.setStartStop(getModel().getStartStop());
+        m.setTargetStop(getModel().getTargetStop());
+        m.setPageSize(getModel().getPageSize());
+
+        return m;
     }
 
     @Override
     public List<Pair<String, String>> getSummary() {
         List<Pair<String, String>> summary = new ArrayList<>();
 
-        summary.add(new Pair<>(mContext.getString(R.string.departure_query_time_label), getTime()));
+        //summary.add(new Pair<>(mContext.getString(R.string.departure_query_time_label), getTime()));
         summary.add(new Pair<>(mContext.getString(R.string.connection_query_start_stop_label), getModel().getStartStop().getName()));
         summary.add(new Pair<>(mContext.getString(R.string.connection_query_target_stop_label), getModel().getTargetStop().getName()));
 
@@ -184,12 +197,22 @@ public class ConnectionQuery extends ScheduleQuery {
     @Override
     protected void populateView() {
         List<BusStop> busStops = getDb().getBusStops();
-        //important to call before start stop initialization as onStartStopSelected is dependant on targetStop value
+
         targetStops.addAll(busStops);
+        startStops.addAll(busStops);
+
+
+        if(busStops.size() > 1){
+            setStartStop(busStops.get(0));
+            setStartStop(busStops.get(1));
+            isReady = true;
+        }
+
+
+        //important to call before start stop initialization as onStartStopSelected is dependant on targetStop value
         notifyTargetStopsChanged();
 
-
-        startStops.addAll(busStops);
+        //has to be called after ready check as asynchronous selection event from view could cause data race
         notifyStartStopsChanged();
     }
 

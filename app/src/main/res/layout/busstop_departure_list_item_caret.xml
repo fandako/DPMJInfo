@@ -27,7 +27,7 @@
             android:id="@+id/departure"
             android:layout_width="0dp"
             android:layout_height="70dp"
-            android:layout_weight="0.20"
+            android:layout_weight="0.22"
             android:gravity="end|center_vertical"
             android:paddingEnd="15dp"
             android:paddingStart="10dp"
@@ -37,7 +37,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="0dp"
             android:layout_height="70dp"
-            android:layout_weight="0.10"
+            android:layout_weight="0.08"
             android:src="@mipmap/caret_right"/>
 
 </LinearLayout>

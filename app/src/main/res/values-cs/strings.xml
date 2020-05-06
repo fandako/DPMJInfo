@@ -84,5 +84,5 @@
     <string name="map_key_user_location_description">poloha uživatele</string>
     <string name="map_location_loading">Načítám polohu…</string>
 
-
+    <string name="query_not_populated_toast">Nebyly nastaveny hodnoty pro vyhledávání</string>
 </resources>

@@ -281,4 +281,11 @@ public class OfflineFilesManager implements Response.Listener<JSONObject>, Respo
             return false;
         }
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+
+        getDb().close();
+    }
 }

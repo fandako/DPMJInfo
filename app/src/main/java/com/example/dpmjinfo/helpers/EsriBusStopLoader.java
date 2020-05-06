@@ -10,6 +10,8 @@ import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.example.dpmjinfo.BusStop;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,6 +50,13 @@ public class EsriBusStopLoader {
                     Feature feature = resultIterator.next();
                     busStops.add(new BusStop(feature));
                 }
+
+                Collections.sort(busStops, new Comparator<BusStop>() {
+                    @Override
+                    public int compare(BusStop o1, BusStop o2) {
+                        return o1.getName().compareTo(o2.getName());
+                    }
+                });
 
                 listener.esriBusStopsDoneLoading(busStops);
             } catch (Exception e) {

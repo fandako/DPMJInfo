@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dpmjinfo.BusStop;
 import com.example.dpmjinfo.BusStopDeparture;
+import com.example.dpmjinfo.queryModels.ScheduleQueryModel;
 import com.example.dpmjinfo.recyclerViewHandling.BusStopDeparturesAdapter;
 import com.example.dpmjinfo.helpers.CISSqliteHelper;
 import com.example.dpmjinfo.queryModels.DepartureQueryModel;
@@ -70,15 +71,27 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
 
     @Override
     public void intiForFavourite() {
-        setDate(DateTime.now().toString(getDateFormat()));
+        DateTime d = DateTime.now();
+        setDate(d.toString(getDateFormat()));
+        setTime(d.toString(getTimeFormat()));
         getModel().setShowAddToFavourite(false);
+    }
+
+    @Override
+    public ScheduleQueryModel getModelForFavourite() {
+        DepartureQueryModel m = new DepartureQueryModel();
+        m.setStop(getModel().getStop());
+        m.setLine(getModel().getLine());
+        m.setPageSize(getModel().getPageSize());
+
+        return m;
     }
 
     @Override
     public List<Pair<String, String>> getSummary() {
         List<Pair<String, String>> summary = new ArrayList<>();
 
-        summary.add(new Pair<>(mContext.getString(R.string.departure_query_time_label), getTime()));
+        //summary.add(new Pair<>(mContext.getString(R.string.departure_query_time_label), getTime()));
         summary.add(new Pair<>(mContext.getString(R.string.departure_query_stop_label), getModel().getStop().getName()));
 
         return summary;
@@ -183,6 +196,12 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
         lines.addAll(helper.getLines());
         notifyLinesChanged();
         //cursor.close();
+
+        if(!busStops.isEmpty()) {
+            setStop(busStops.get(0));
+            setLine(lines.get(0));
+            isReady = true;
+        }
     }
 
     public String getName() {

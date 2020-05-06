@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -17,8 +20,10 @@ import java.util.Locale;
 public class DatePickerUniversal implements View.OnFocusChangeListener, DatePickerDialog.OnDateSetListener, View.OnClickListener {
 
     private EditText mEditText;
-    private Calendar mCalendar;
-    private SimpleDateFormat mFormat;
+    //private Calendar mCalendar;
+    //private SimpleDateFormat mFormat;
+
+    String dateFormat;
 
     /**
      * Constructor
@@ -30,7 +35,9 @@ public class DatePickerUniversal implements View.OnFocusChangeListener, DatePick
         this.mEditText = editText;
         mEditText.setOnFocusChangeListener(this);
         mEditText.setOnClickListener(this);
-        mFormat = new SimpleDateFormat(format, Locale.getDefault());
+        //mFormat = new SimpleDateFormat(format, Locale.getDefault());
+
+        dateFormat = format;
     }
 
     @Override
@@ -46,22 +53,35 @@ public class DatePickerUniversal implements View.OnFocusChangeListener, DatePick
     }
 
     private void showPicker(View view) {
-        if (mCalendar == null)
+        /*if (mCalendar == null)
             mCalendar = Calendar.getInstance();
 
         int day = mCalendar.get(Calendar.DAY_OF_MONTH);
         int month = mCalendar.get(Calendar.MONTH);
-        int year = mCalendar.get(Calendar.YEAR);
+        int year = mCalendar.get(Calendar.YEAR);*/
+
+        DateTime d = DateTime.parse(mEditText.getText().toString(), DateTimeFormat.forPattern(dateFormat));
+
+        int day = d.getDayOfMonth();
+        int month = d.getMonthOfYear() - 1;
+        int year = d.getYear();
 
         new DatePickerDialog(view.getContext(), this, year, month, day).show();
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        mCalendar.set(Calendar.YEAR, year);
+        /*mCalendar.set(Calendar.YEAR, year);
         mCalendar.set(Calendar.MONTH, month);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-        this.mEditText.setText(mFormat.format(mCalendar.getTime()));
+        this.mEditText.setText(mFormat.format(mCalendar.getTime()));*/
+
+        DateTime d = new DateTime()
+                .withYear(year)
+                .withMonthOfYear(month + 1)
+                .withDayOfMonth(dayOfMonth);
+
+        this.mEditText.setText(d.toString(dateFormat));
     }
 }

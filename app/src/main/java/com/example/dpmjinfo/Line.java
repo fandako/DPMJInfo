@@ -2,9 +2,10 @@ package com.example.dpmjinfo;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Line {
+public class Line implements Serializable {
     private int lineId;
     private String lineName;
 

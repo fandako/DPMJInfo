@@ -1,21 +1,25 @@
 package com.example.dpmjinfo.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.dpmjinfo.BusStop;
 import com.example.dpmjinfo.BusStopDeparture;
-import com.example.dpmjinfo.BusStopDeparturesAdapter;
-import com.example.dpmjinfo.BusStopSpinnerAdapter;
+import com.example.dpmjinfo.helpers.ElpDepartureHelper;
+import com.example.dpmjinfo.helpers.NetworkHelper;
+import com.example.dpmjinfo.recyclerViewHandling.BusStopDeparturesAdapter;
 import com.example.dpmjinfo.R;
 
 import org.jsoup.Jsoup;
@@ -24,17 +28,33 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for displaying detailed info about given bus
+ * stop while showing also actual departures from this bus stop
+ */
 public class BusStopDetailActivity extends AppCompatActivity {
+    //recyclerView to hold actual departures + its adapter for BusStopDepartures
     private RecyclerView recyclerView;
     private BusStopDeparturesAdapter busStopDepartureAdapter;
+
+    //
     private RecyclerView.LayoutManager layoutManager;
+
+    //UI elements
     private TextView name;
     private TextView lines;
     private TextView wheelchairAccessible;
     private List departureList = new ArrayList<>();
+    private TextView noInternetText;
+    private Button refreshButton;
+
+    //object holding info about given bus stop
+    BusStop busStop;
+    AlertDialog.Builder alertBuilder = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +68,13 @@ public class BusStopDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
-        BusStop busStop = (BusStop) bundle.getSerializable("com.android.dpmjinfo.busStop");
+        busStop = (BusStop) bundle.getSerializable("com.android.dpmjinfo.busStop");
 
         name = findViewById(R.id.name);
         lines = findViewById(R.id.lines);
         wheelchairAccessible = findViewById(R.id.wheelchairAccessible);
+        noInternetText = findViewById(R.id.noInternetText);
+        refreshButton = findViewById(R.id.refreshButton);
 
         name.setText(busStop.getName());
         lines.setText(busStop.getLines());
@@ -72,9 +94,39 @@ public class BusStopDetailActivity extends AppCompatActivity {
         busStopDepartureAdapter = new BusStopDeparturesAdapter(departureList, R.layout.busstop_departure_list_item);
         recyclerView.setAdapter(busStopDepartureAdapter);
 
+        //on click refresh actual departures if network connection is present
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!NetworkHelper.isNetworkAvailable(BusStopDetailActivity.this)){
+                    alertBuilder = new AlertDialog.Builder(BusStopDetailActivity.this);
+                    alertBuilder
+                            .setMessage(getString(R.string.no_internet_connection_alert_message))
+                            .setTitle(getString(R.string.no_internet_connection_alert_title))
+                            .setPositiveButton(getString(R.string.no_internet_connection_ok_button_text), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+
+                    return;
+                }
+
+                getDeparturesFromWeb(busStop);
+            }
+        });
+
         getDeparturesFromWeb(/*message.getElp_id()*/busStop);
     }
 
+    /**
+     * Hides progress bar and displays departures
+     * @param departures list of actual departures
+     */
     void updateDepartures(List<BusStopDeparture> departures){
         findViewById(R.id.elpProgressBar).setVisibility(View.GONE);
         findViewById(R.id.elpProgressBarLabel).setVisibility(View.GONE);
@@ -91,37 +143,53 @@ public class BusStopDetailActivity extends AppCompatActivity {
         busStopDepartureAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Starts async task for loading actual departures if network connection is present
+     * @param busStop bus stop for which to get actual departures
+     */
     void getDeparturesFromWeb(/*Short stopID*/BusStop busStop){
-        new Thread(new Runnable() {
-            private List<BusStopDeparture> departures = new ArrayList<>();
+        if(NetworkHelper.isNetworkAvailable(this)) {
+            noInternetText.setVisibility(View.GONE);
+            refreshButton.setVisibility(View.GONE);
+            new Task(this, busStop).execute(0);
+        } else {
+            noInternetText.setVisibility(View.VISIBLE);
+            refreshButton.setVisibility(View.VISIBLE);
+        }
+    }
 
-            @Override
-            public void run() {
-                final StringBuilder builder = new StringBuilder();
+    /**
+     * AsyncTask class for loading actual departures
+     */
+    private static class Task extends AsyncTask<Integer, Integer, List<BusStopDeparture>> {
 
-                String url = /*"http://elp.dpmj.cz/ElpDepartures/Home/Departures?stop=" + stopID*/busStop.getHref();
+        //reference to current activity for calling callback which processes obtained departures
+        private WeakReference<BusStopDetailActivity> activityReference;
+        private BusStop busStop;
 
-                try {
-                    Document doc = Jsoup.connect(url).get();
-                    Elements divs = doc.select("div.stationNameBox");
+        public Task(BusStopDetailActivity context, BusStop b) {
+            activityReference = new WeakReference<>(context);
+            busStop = b;
+        }
 
-                    for (Element div : divs) {
-                        builder.append("\n").append(div.previousElementSibling().text()).append(" ").append(div.text()).append(" ").append(div.nextElementSibling().nextElementSibling().text());
-                        BusStopDeparture departure = new BusStopDeparture(div.previousElementSibling().text(), div.text(), div.nextElementSibling().nextElementSibling().text());
-                        departures.add(departure);
-                    }
-                } catch (IOException e) {
-                    builder.append("Error : ").append(e.getMessage()).append("\n");
-                }
+        @Override
+        protected List<BusStopDeparture> doInBackground(Integer... ints) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateDepartures(departures);
-                    }
-                });
-            }
-        }).start();
+            // get a reference to the activity if it is still there
+            BusStopDetailActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return new ArrayList<>();
+
+            return ElpDepartureHelper.getDepartures(busStop);
+        }
+
+        @Override
+        protected void onPostExecute(List<BusStopDeparture> departures) {
+            // get a reference to the activity if it is still there
+            BusStopDetailActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
+            activity.updateDepartures(departures);
+        }
     }
 
     @Override

@@ -14,13 +14,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 
-import com.example.dpmjinfo.MapFilterItemsAdapter;
+import com.example.dpmjinfo.recyclerViewHandling.MapFilterItemsAdapter;
 import com.example.dpmjinfo.R;
-import com.example.dpmjinfo.RecycleViewClickListener;
-import com.example.dpmjinfo.RecyclerViewTouchListener;
+import com.example.dpmjinfo.recyclerViewHandling.RecycleViewClickListener;
+import com.example.dpmjinfo.recyclerViewHandling.RecyclerViewTouchListener;
 
 import java.util.ArrayList;
 
+/**
+ * Displays selectable lines to user, selected lines are supplied to map activity which in turn
+ * displays only selected lines
+ */
 public class MapFilterActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter busStopDepartureAdapter;
@@ -40,7 +44,7 @@ public class MapFilterActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
-        //get list of bus stops
+        //get list of currently selected lines
         ArrayList<String> lineFilter = (ArrayList<String>) bundle.getSerializable("com.example.dpmjinfo.lineFilter");
         ArrayList<String> lines = (ArrayList<String>) bundle.getSerializable("com.example.dpmjinfo.lines");
 
@@ -58,9 +62,10 @@ public class MapFilterActivity extends AppCompatActivity {
         MapFilterItemsAdapter mapFilterItemsAdapter = new MapFilterItemsAdapter(lines, lineFilter);
         recyclerView.setAdapter(mapFilterItemsAdapter);
 
+        //add or remove line from selected based on user touch
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(this,
                 recyclerView, new RecycleViewClickListener() {
-            private void openDetail(View view, int position){
+            private void openDetail(View view, int position) {
                 CheckedTextView checkedTextView = (CheckedTextView) view.findViewById(R.id.checkedTextView);
                 MapFilterItemsAdapter mapFilterItemsAdapter = (MapFilterItemsAdapter) recyclerView.getAdapter();
                 boolean wasChecked = checkedTextView.isChecked();
@@ -68,7 +73,7 @@ public class MapFilterActivity extends AppCompatActivity {
                 //get object from position
                 String item = mapFilterItemsAdapter.getItem(position);
 
-                if(wasChecked) {
+                if (wasChecked) {
                     mapFilterItemsAdapter.removeCheckedLine(item);
                 } else {
                     mapFilterItemsAdapter.addCheckedLine(item);
@@ -89,6 +94,7 @@ public class MapFilterActivity extends AppCompatActivity {
         }));
 
         Button button = findViewById(R.id.button);
+        //on filter button click finish activity and return selected lines to map activity
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +111,7 @@ public class MapFilterActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp(){
+    public boolean onSupportNavigateUp() {
         finish();
         return true;
     }

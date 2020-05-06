@@ -44,14 +44,45 @@
     <string name="download_activity_title">Stahování</string>
     <string name="connection_detail_query_title">Detail spoje</string>
     <string name="map_object_selection_title">Výběr objektu</string>
+    <string name="no_internet_connection_alert_title">Chyba připojení</string>
     <string name="no_internet_connection_alert_message">Není připojení k internetu</string>
+    <string name="map_no_internet_connection_alert_message">Online mapa dopravy ke své funkci vyžaduje připojení k internetu</string>
     <string name="download_error_alert_title">Chyba stahování</string>
     <string name="no_internet_connection_ok_button_text">OK</string>
     <string name="download_error_alert_message">Při stahování došlo k chybě</string>
-    <string name="update_available_alert_message">Je k dispozici nová verze jizdních řádů. Stáhnout Nyní?</string>
+    <string name="update_available_alert_message">Je k dispozici nová verze jizdních řádů. Stáhnout nyní?</string>
+    <string name="map_update_available_alert_message">Je k dispozici nová verze podkladové mapy. Stáhnout nyní?</string>
     <string name="update_available_alert_title">Aktualizace</string>
     <string name="update_available_alert_ok_button_text">Stáhnout</string>
     <string name="update_available_alert_cancel_button_text">Nyní ne</string>
+    <string name="title_activity_settings">Nastavení</string>
+
+    <string name="base_map_setting_title">Offline podkladová mapa</string>
+    <string name="base_map_setting_summary">Načítat mapu z lokálního úložiště?</string>
+
+    <string name="error_alert_title">Chyba</string>
+    <string name="map_no_base_map_file_alert_message">Není k dispozici soubor s podkladovou mapou</string>
+
+    <string name="refresh_button_text">Znovu načíst</string>
+
+    <string name="base_map_delete_alert_title">Smazat mapu?</string>
+    <string name="base_map_delete_alert_message">Přejete si skutečně smazat lokálně uloženou podkladobou mapu?</string>
+    <string name="base_map_delete_alert_positive_button">Ano</string>
+    <string name="base_map_delete_alert_negative_button">Ne</string>
+
+    <string name="schedules_are_actual_toast">Jízdní řády jsou aktuální</string>
+    <string name="base_map_deleted_toast">Podkladová mapa smazána</string>
+    <string name="base_map_delete_error_toast">Při mazání podkladové mapy došlo k chybě</string>
+
+    <string name="favourite_delete_fail_toast">Při mazání položky došlo k chybě</string>
+    <string name="added_to_favourite_toast">Přidáno do oblíbených</string>
+    <string name="favourite_already_saved_toast">Již uloženo v oblíbených</string>
+    <string name="favourite_saving_error_toast">Při ukládání nastala chyba</string>
+
+    <string name="articles_title">Aktuality</string>
+
+    <string name="map_key_user_location_description">poloha uživatele</string>
+    <string name="map_location_loading">Načítám polohu…</string>
 
 
 </resources>

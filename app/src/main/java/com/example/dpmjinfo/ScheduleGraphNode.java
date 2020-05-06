@@ -1,12 +1,15 @@
 package com.example.dpmjinfo;
 
+
 public class ScheduleGraphNode implements Comparable<ScheduleGraphNode> {
     private int stopId;
     private ScheduleGraphEdge precedingEdge;
+    private EdgeSequence edgeSequence;
 
     public ScheduleGraphNode(int stopId, ScheduleGraphEdge precedingEdge) {
         this.stopId = stopId;
         this.precedingEdge = precedingEdge;
+        edgeSequence = new EdgeSequence();
     }
 
     public int getStopId() {
@@ -52,5 +55,13 @@ public class ScheduleGraphNode implements Comparable<ScheduleGraphNode> {
         if(getStopId() == o.getStopId()) return 0;
 
         return getDistance().compareTo(o.getDistance());
+    }
+
+    public EdgeSequence getEdgeSequence() {
+        return edgeSequence;
+    }
+
+    public void setEdgeSequence(EdgeSequence edgeSequence) {
+        this.edgeSequence = edgeSequence;
     }
 }

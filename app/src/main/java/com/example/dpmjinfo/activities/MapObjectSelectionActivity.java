@@ -16,13 +16,17 @@ import com.example.dpmjinfo.MapObjectSelectionItem;
 import com.example.dpmjinfo.MapObjectSelectionItemsAdapter;
 import com.example.dpmjinfo.MapObjectSelectionVehicleItem;
 import com.example.dpmjinfo.R;
-import com.example.dpmjinfo.RecycleViewClickListener;
-import com.example.dpmjinfo.RecyclerViewTouchListener;
+import com.example.dpmjinfo.recyclerViewHandling.RecycleViewClickListener;
+import com.example.dpmjinfo.recyclerViewHandling.RecyclerViewTouchListener;
 import com.example.dpmjinfo.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays group of map items which where to close together to recognize single one on user touch, user can select item
+ * to display its detail
+ */
 public class MapObjectSelectionActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter busStopDepartureAdapter;

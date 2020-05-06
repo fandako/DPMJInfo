@@ -1,0 +1,30 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/map_icon_title">
+
+        <SwitchPreference
+            app:key="map_base_map"
+            app:title="@string/base_map_setting_title"
+            app:summary="@string/base_map_setting_summary"
+            app:icon="@mipmap/map_icon"
+            app:persistent="true"
+            app:defaultValue="true"/>
+
+        <Preference app:key="delete_base_map"
+            app:title="Smazat mapu"
+            app:summary="Smaže lokálně uloženou podkladovou mapu"
+            app:allowDividerAbove="true"
+            app:allowDividerBelow="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Jízdní řády">
+
+        <Preference app:key="update_schedule"
+            app:title="Aktualizace"
+            app:summary="Zkontroluje dostupnost aktualizací jízdních řádů"
+            app:icon="@mipmap/update_icon" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

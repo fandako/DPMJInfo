@@ -3,4 +3,5 @@
     <string name="gis_url_lines" translatable="false">https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/5</string>
     <string name="gis_url_lines_map" translatable="false">https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/4</string>
     <string name="gis_url_stops" translatable="false">https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/3</string>
+    <string name="gis_url_vehicles" translatable="false">https://gis.jihlava-city.cz/server/rest/services/ost/Ji_MHD_aktualni/MapServer/6</string>
 </resources>

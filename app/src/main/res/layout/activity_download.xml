@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:background="#55F"
         android:padding="15dp"
-        android:text=""
+        android:text="@string/cancel_button_text"
         android:textColor="#FFF"
         android:textSize="18sp"
         android:textStyle="bold"

@@ -9,6 +9,9 @@ import android.widget.TextView;
 import com.example.dpmjinfo.R;
 import com.example.dpmjinfo.Vehicle;
 
+/**
+ * activity for displaying vehicle detail
+ */
 public class VehicleDetailActivity extends AppCompatActivity {
     private TextView line;
     private TextView terminal;

@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -12,8 +15,9 @@ import java.util.Locale;
 public class TimePickerUniversal implements View.OnFocusChangeListener, TimePickerDialog.OnTimeSetListener, View.OnClickListener {
 
     private EditText mEditText;
-    private Calendar mCalendar;
-    private SimpleDateFormat mFormat;
+    //private Calendar mCalendar;
+    //private SimpleDateFormat mFormat;
+    private String timeFormat;
 
     /**
      * Constructor
@@ -25,7 +29,9 @@ public class TimePickerUniversal implements View.OnFocusChangeListener, TimePick
         this.mEditText = editText;
         mEditText.setOnFocusChangeListener(this);
         mEditText.setOnClickListener(this);
-        mFormat = new SimpleDateFormat(format, Locale.getDefault());
+        //mFormat = new SimpleDateFormat(format, Locale.getDefault());
+
+        timeFormat = format;
     }
 
     @Override
@@ -41,19 +47,32 @@ public class TimePickerUniversal implements View.OnFocusChangeListener, TimePick
     }
 
     private void showPicker(View view) {
-        if (mCalendar == null)
+        /*if (mCalendar == null)
             mCalendar = Calendar.getInstance();
 
         int hour = mCalendar.get(Calendar.HOUR_OF_DAY);
-        int minute = mCalendar.get(Calendar.MINUTE);
+        int minute = mCalendar.get(Calendar.MINUTE);*/
+
+        DateTime d = DateTime.parse(mEditText.getText().toString(), DateTimeFormat.forPattern(timeFormat));
+
+        int hour = d.getHourOfDay();
+        int minute = d.getMinuteOfHour();
 
         new TimePickerDialog(view.getContext(), this, hour, minute, true).show();
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        mCalendar.set(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH), hourOfDay, minute);
+        //mCalendar.set(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH), hourOfDay, minute);
 
-        this.mEditText.setText(mFormat.format(mCalendar.getTime()));
+        /*this.mEditText.setText(mFormat.format(mCalendar.getTime()));*/
+
+        DateTime d = new DateTime()
+                .withHourOfDay(hourOfDay)
+                .withMinuteOfHour(minute);
+
+        this.mEditText.setText(d.toString(timeFormat));
+
+
     }
 }

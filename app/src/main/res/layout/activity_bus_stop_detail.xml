@@ -52,13 +52,13 @@
         android:id="@+id/noItemsText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/no_items_found"
         style="@style/labelTextView"
         android:textSize="18sp"
+        android:padding="15dp"
         android:textAlignment="center"
         android:visibility="gone"/>
 
@@ -87,6 +87,36 @@
         app:layout_constraintTop_toBottomOf="@id/elpProgressBar"
         android:textAlignment="center"
         android:text="@string/bus_stop_detail_loading_label" />
+
+    <TextView
+        android:id="@+id/noInternetText"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="15dp"
+        android:textSize="18sp"
+        android:text="@string/no_internet_connection_alert_message"/>
+
+    <Button
+        android:id="@+id/refreshButton"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#C9F0FF"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="@string/refresh_button_text"
+        android:textColor="#483D3F"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/noInternetText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

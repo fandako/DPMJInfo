@@ -2,9 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_articles"
+        android:orderInCategory="200"
+        app:showAsAction="always"
+        android:icon="@drawable/info_icon2"
+        android:title="@string/map_icon_title"/>
+
+    <item
         android:id="@+id/action_map"
         android:orderInCategory="200"
         app:showAsAction="always"
         android:icon="@mipmap/map_icon"
         android:title="@string/map_icon_title"/>
+
+    <item
+        android:id="@+id/action_favourite"
+        android:orderInCategory="200"
+        app:showAsAction="always"
+        android:icon="@mipmap/favourite_icon"
+        android:title="@string/map_icon_title"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="200"
+        app:showAsAction="always"
+        android:icon="@mipmap/settings_icon"
+        android:title="@string/title_activity_settings"/>
 </menu>

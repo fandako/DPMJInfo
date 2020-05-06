@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_add_to_favourite"
+        android:orderInCategory="200"
+        app:showAsAction="always"
+        android:icon="@mipmap/add_to_favourite_icon"
+        android:title="@string/map_icon_title"/>
+</menu>

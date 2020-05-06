@@ -1,6 +1,6 @@
 package com.example.dpmjinfo;
 
-public class ScheduleGraphEdge {
+public class ScheduleGraphEdge{
     private int lineId;
     private int connectionId;
     private int startStop;
@@ -10,6 +10,7 @@ public class ScheduleGraphEdge {
     private String lineName;
     private String targetStopName;
     private String startStopName;
+    private int time;
 
     public ScheduleGraphEdge(){
 
@@ -22,6 +23,23 @@ public class ScheduleGraphEdge {
         this.targetStop = targetStop;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
+    }
+
+    public ScheduleGraphEdge(int lineId, String lineName, int connectionId, int startStop, String startStopName, int targetStop, String targetStopName, String departureTime, String arrivalTime, int time) {
+        this.lineId = lineId;
+        this.connectionId = connectionId;
+        this.startStop = startStop;
+        this.startStopName = startStopName;
+        this.targetStop = targetStop;
+        this.targetStopName = targetStopName;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.lineName = lineName;
+        this.time = time;
+    }
+
+    public ScheduleGraphEdge(ScheduleGraphEdge o){
+        this(o.getLineId(), o.getLineName(), o.getConnectionId(), o.getStartStop(), o.getStartStopName(), o.getTargetStop(), o.getTargetStopName(), o.getDepartureTime(), o.getArrivalTime(), o.getTime());
     }
 
     public int getLineId() {
@@ -94,5 +112,13 @@ public class ScheduleGraphEdge {
 
     public void setStartStopName(String startStopName) {
         this.startStopName = startStopName;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
     }
 }

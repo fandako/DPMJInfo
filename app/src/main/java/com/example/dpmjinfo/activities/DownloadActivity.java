@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -20,15 +19,15 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.dpmjinfo.OfflineFilesManager;
+import com.example.dpmjinfo.helpers.OfflineFilesManager;
 import com.example.dpmjinfo.R;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 
+/**
+ * Handles downloading of files, displays download progress to user
+ */
 public class DownloadActivity extends AppCompatActivity {
 
     private TextView fileNameField;
@@ -50,7 +49,9 @@ public class DownloadActivity extends AppCompatActivity {
     Object[] downloadFileTypes;
     OfflineFilesManager ofm;
 
-    //listen to download complete broadcast to know when download finishes
+    /**
+     * listen to download complete broadcast to know when download finishes
+     */
     private final BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -62,7 +63,7 @@ public class DownloadActivity extends AppCompatActivity {
 
                 DownloadManager.Query query = new DownloadManager.Query();
                 query.setFilterById(downloadID);
-                //query.setFilterByStatus(~(DownloadManager.STATUS_FAILED | DownloadManager.STATUS_SUCCESSFUL));
+
                 Cursor cursor = downloadManager.query(query);
                 if (!cursor.moveToFirst()) {
                     Log.d("dbg", "no query result");
@@ -74,7 +75,7 @@ public class DownloadActivity extends AppCompatActivity {
 
                     if(status == DownloadManager.STATUS_SUCCESSFUL){
                         Log.d("dbg", "download complete");
-                        //complete();
+
                         moveToNextDownload();
                     }
 
@@ -82,6 +83,7 @@ public class DownloadActivity extends AppCompatActivity {
                         Log.d("dbg", "download failed");
                         cancel();
                     }
+
                     //stop progress checking
                     stopProgressChecker();
                 } while (cursor.moveToNext());
@@ -90,9 +92,12 @@ public class DownloadActivity extends AppCompatActivity {
         }
     };
 
-
+    //delay between download progress checks
     private static final int PROGRESS_DELAY = 16;
+
+    //handler to run progress checking
     Handler handler = new Handler();
+
     private boolean isProgressCheckerRunning = false;
 
     /**
@@ -174,22 +179,10 @@ public class DownloadActivity extends AppCompatActivity {
 
         fileNameField = findViewById(R.id.fileName);
         progressBar = findViewById(R.id.progressBar);
-        //downloadButton = findViewById(R.id.download);
         cancelButton = findViewById(R.id.cancel);
         progressText = findViewById(R.id.progress);
 
         progressText.setText("0%");
-
-        /*downloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setProgress(1);
-                downloadButton.setVisibility(View.INVISIBLE);
-                cancelButton.setVisibility(View.VISIBLE);
-
-                downloadFile(downloadURL);
-            }
-        });*/
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,8 +190,6 @@ public class DownloadActivity extends AppCompatActivity {
                 downloadManager.remove(downloadID);
                 progressText.setText("0%");
                 progressBar.setProgress(0);
-                //downloadButton.setVisibility(View.VISIBLE);
-                //cancelButton.setVisibility(View.INVISIBLE);
 
                 cancel();
             }
@@ -228,6 +219,9 @@ public class DownloadActivity extends AppCompatActivity {
         downloadFile(downloadUrls.get(downloadFileTypes[downloadedCnt]));
     }
 
+    /**
+     * move to next download request if possible else complete activity
+     */
     private void moveToNextDownload(){
         ofm.fileDownloaded((String) downloadFileTypes[downloadedCnt], downloadUrls.get(downloadFileTypes[downloadedCnt]));
         downloadedCnt++;
@@ -241,6 +235,10 @@ public class DownloadActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * downloads file from given url using DownloadManager
+     * @param url url of file to download
+     */
     private void downloadFile(String url) {
         String fileName = ofm.getFilenameFromUrl(url);
         filePath = ofm.getFilePathFromUrl(url);
@@ -281,10 +279,13 @@ public class DownloadActivity extends AppCompatActivity {
         } catch (IllegalArgumentException e) {
             //BaseUtils.showToast(mContext, "Download link is broken or not available for download");
             Log.e("error", "Method: downloadFile: Download link is broken");
-
+            cancel();
         }
     }
 
+    /**
+     * called to finish activity on success
+     */
     public void complete() {
         unregisterReceiver(onDownloadComplete);
 
@@ -293,6 +294,9 @@ public class DownloadActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * called to finish activity on failure
+     */
     public void cancel() {
         unregisterReceiver(onDownloadComplete);
 

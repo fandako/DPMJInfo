@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    tools:context=".activities.MapKeyActivity">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/mapKeyText"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/labelTextView"
+        android:textSize="18sp"
+        android:text="@string/map_functionality_description" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/busIcon"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        app:layout_constraintTop_toBottomOf="@id/mapKeyText"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="15dp"
+        android:src="@mipmap/bus"
+        android:rotation="90" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/trolleybusIcon"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        app:layout_constraintTop_toBottomOf="@id/busIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="15dp"
+        android:src="@mipmap/trolleybus"
+        android:rotation="90" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/waitingIcon"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        app:layout_constraintTop_toBottomOf="@id/trolleybusIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="15dp"
+        android:src="@mipmap/waiting"
+        android:rotation="90" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/userIcon"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        app:layout_constraintTop_toBottomOf="@id/waitingIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="15dp"
+        android:src="@mipmap/user_location_icon"
+        android:scaleY="0.8"
+        android:scaleX="0.8"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/busText"
+        app:layout_constraintTop_toBottomOf="@id/mapKeyText"
+        app:layout_constraintStart_toEndOf="@id/busIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        style="@style/labelTextView"
+        android:textSize="18sp"
+        android:layout_marginTop="15dp"
+        android:text="@string/bus"
+        android:gravity="center"
+        android:layout_marginStart="15dp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/trolleybusText"
+    app:layout_constraintTop_toBottomOf="@id/busText"
+    app:layout_constraintStart_toEndOf="@id/trolleybusIcon"
+    android:layout_width="wrap_content"
+    android:layout_height="45dp"
+    style="@style/labelTextView"
+    android:textSize="18sp"
+    android:layout_marginTop="15dp"
+    android:text="@string/trolleybus"
+    android:gravity="center"
+    android:layout_marginStart="15dp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/waitingText"
+        app:layout_constraintTop_toBottomOf="@id/trolleybusText"
+        app:layout_constraintStart_toEndOf="@id/waitingIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        style="@style/labelTextView"
+        android:textSize="18sp"
+        android:layout_marginTop="15dp"
+        android:text="@string/waiting_vehicle"
+        android:gravity="center"
+        android:layout_marginStart="15dp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/userText"
+        app:layout_constraintTop_toBottomOf="@id/waitingText"
+        app:layout_constraintStart_toEndOf="@id/userIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        style="@style/labelTextView"
+        android:textSize="18sp"
+        android:layout_marginTop="15dp"
+        android:text="@string/map_key_user_location_description"
+        android:gravity="center"
+        android:layout_marginStart="15dp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/credits"
+        app:layout_constraintTop_toBottomOf="@id/userText"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        style="@style/labelTextView"
+        android:textSize="18sp"
+        android:text="@string/created"
+        android:gravity="center"
+        android:layout_marginStart="15dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

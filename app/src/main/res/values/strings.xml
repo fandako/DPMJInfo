@@ -43,13 +43,44 @@
     <string name="download_activity_title">Download</string>
     <string name="connection_detail_query_title">Connection detail</string>
     <string name="map_object_selection_title">Object selection</string>
+    <string name="no_internet_connection_alert_title">Connection error</string>
     <string name="no_internet_connection_alert_message">No internet connection available</string>
+    <string name="map_no_internet_connection_alert_message">Online public transportation map requires internet connection in order to function properly</string>
     <string name="download_error_alert_title">Download error</string>
     <string name="no_internet_connection_ok_button_text">OK</string>
     <string name="download_error_alert_message">Error occurred during download</string>
     <string name="update_available_alert_message">New schedule definition update is available. Download now?</string>
+    <string name="map_update_available_alert_message">New base map update is available. Download now?</string>
     <string name="update_available_alert_title">Update</string>
     <string name="update_available_alert_ok_button_text">Download</string>
     <string name="update_available_alert_cancel_button_text">Not now</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="base_map_setting_title">Offline base map</string>
+    <string name="base_map_setting_summary">Use map saved in local storage?</string>
+
+    <string name="error_alert_title">Error</string>
+    <string name="map_no_base_map_file_alert_message">No base map file is available</string>
+
+    <string name="refresh_button_text">Refresh</string>
+
+    <string name="base_map_delete_alert_title">Delete map?</string>
+    <string name="base_map_delete_alert_message">Do you really wish to delete downloaded base map?</string>
+    <string name="base_map_delete_alert_positive_button">Yes</string>
+    <string name="base_map_delete_alert_negative_button">No</string>
+
+    <string name="schedules_are_actual_toast">Schedules are up-to-date</string>
+    <string name="base_map_deleted_toast">Base map successfully deleted</string>
+    <string name="base_map_delete_error_toast">Error occurred during base map deletion</string>
+
+    <string name="favourite_delete_fail_toast">Error while deleting favourite</string>
+    <string name="added_to_favourite_toast">Added to favourite</string>
+    <string name="favourite_already_saved_toast">Favourite already saved</string>
+    <string name="favourite_saving_error_toast">Error while saving favourite</string>
+
+    <string name="articles_title">News</string>
+
+    <string name="map_key_user_location_description">user location</string>
+    <string name="map_location_loading">Loading position…</string>
 
 </resources>

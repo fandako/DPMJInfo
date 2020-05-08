@@ -61,6 +61,16 @@ public class OfflineFileDb extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void clearDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Drop older table if exist
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVOURITE);
+        // Create tables again
+        onCreate(db);
+    }
+
     /**
      * return file path for given filetype
      * @param fileType fileType (OfflineFilesManager.MAP, ...)

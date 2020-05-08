@@ -109,7 +109,7 @@ public class EdgeSequence implements Comparable<EdgeSequence> {
         EdgeSequence other = (EdgeSequence) obj;
         if (!edges.equals(other.edges)) return false;
 
-        return getLastTime().compareTo(other.getLastTime()) != 0;
+        return getLastTime().compareTo(other.getLastTime()) == 0;
     }
 
     @Override

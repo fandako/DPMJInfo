@@ -47,12 +47,6 @@ public class TimePickerUniversal implements View.OnFocusChangeListener, TimePick
     }
 
     private void showPicker(View view) {
-        /*if (mCalendar == null)
-            mCalendar = Calendar.getInstance();
-
-        int hour = mCalendar.get(Calendar.HOUR_OF_DAY);
-        int minute = mCalendar.get(Calendar.MINUTE);*/
-
         DateTime d = DateTime.parse(mEditText.getText().toString(), DateTimeFormat.forPattern(timeFormat));
 
         int hour = d.getHourOfDay();
@@ -63,16 +57,10 @@ public class TimePickerUniversal implements View.OnFocusChangeListener, TimePick
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        //mCalendar.set(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH), hourOfDay, minute);
-
-        /*this.mEditText.setText(mFormat.format(mCalendar.getTime()));*/
-
         DateTime d = new DateTime()
                 .withHourOfDay(hourOfDay)
                 .withMinuteOfHour(minute);
 
         this.mEditText.setText(d.toString(timeFormat));
-
-
     }
 }

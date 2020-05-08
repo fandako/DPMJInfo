@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.dpmjinfo.R;
 import com.example.dpmjinfo.queries.ScheduleQuery;
 
 import org.joda.time.DateTime;
@@ -26,7 +27,7 @@ import java.util.Stack;
 public class OfflineFilesManager implements Response.Listener<JSONObject>, Response.ErrorListener {
     private Stack<JsonObjectRequest> requests;
     private Hashtable<String, String> results;
-    private RequestQueue queue;
+    private RequestQueue queue = null;
     private OfflineFileManagerRequestsDoneListener doneListener;
     private Context mContext;
     private OfflineFileDb db = null;
@@ -38,7 +39,7 @@ public class OfflineFilesManager implements Response.Listener<JSONObject>, Respo
     public OfflineFilesManager(Context context) {
         requests = new Stack<>();
         results = new Hashtable<>();
-        queue = Volley.newRequestQueue(context);
+        //queue = Volley.newRequestQueue(context);
         mContext = context;
     }
 
@@ -49,6 +50,18 @@ public class OfflineFilesManager implements Response.Listener<JSONObject>, Respo
         }
 
         return db;
+    }
+
+    private RequestQueue getQueue() {
+        if(queue == null){
+            queue = Volley.newRequestQueue(mContext);
+        }
+
+        return queue;
+    }
+
+    public void setQueue(RequestQueue queue) {
+        this.queue = queue;
     }
 
     /**
@@ -98,6 +111,7 @@ public class OfflineFilesManager implements Response.Listener<JSONObject>, Respo
     private void checkForUpdate(String fileType) {
         String url = "http://testalbum.8u.cz/dpmjinfoserver/API/mobileUploadsAPI.php?fileType=" + fileType + "&toDate=" + getCurrentDate() + "&limit=1";
 
+        url = mContext.getString(R.string.offline_files_url, fileType, getCurrentDate());
         Log.d("dbg", url);
         addRequest(url);
     }
@@ -133,7 +147,7 @@ public class OfflineFilesManager implements Response.Listener<JSONObject>, Respo
 
         doneListener = listener;
         //add first request to queue -> requests processing starts
-        queue.add(requests.pop());
+        getQueue().add(requests.pop());
     }
 
     /**
@@ -147,7 +161,7 @@ public class OfflineFilesManager implements Response.Listener<JSONObject>, Respo
         }
 
         //move to the next request
-        queue.add(requests.pop());
+        getQueue().add(requests.pop());
     }
 
     /**
@@ -230,8 +244,8 @@ public class OfflineFilesManager implements Response.Listener<JSONObject>, Respo
     }
 
     /**
-     * try to save record about file downloaded from given url to db, on db insert failure deletes file
-     * to avoid conflicts
+     * try to save record about file downloaded from given url to db, on success deletes previous version of file, on db insert failure deletes file
+     * downloaded to avoid conflicts
      * @param fileType type of file
      * @param url url
      * @return true on success, false otherwise

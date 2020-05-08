@@ -53,13 +53,6 @@ public class DatePickerUniversal implements View.OnFocusChangeListener, DatePick
     }
 
     private void showPicker(View view) {
-        /*if (mCalendar == null)
-            mCalendar = Calendar.getInstance();
-
-        int day = mCalendar.get(Calendar.DAY_OF_MONTH);
-        int month = mCalendar.get(Calendar.MONTH);
-        int year = mCalendar.get(Calendar.YEAR);*/
-
         DateTime d = DateTime.parse(mEditText.getText().toString(), DateTimeFormat.forPattern(dateFormat));
 
         int day = d.getDayOfMonth();
@@ -71,12 +64,6 @@ public class DatePickerUniversal implements View.OnFocusChangeListener, DatePick
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        /*mCalendar.set(Calendar.YEAR, year);
-        mCalendar.set(Calendar.MONTH, month);
-        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-        this.mEditText.setText(mFormat.format(mCalendar.getTime()));*/
-
         DateTime d = new DateTime()
                 .withYear(year)
                 .withMonthOfYear(month + 1)

@@ -94,6 +94,15 @@ public class DepartureQuery extends ScheduleQuery implements Serializable {
         //summary.add(new Pair<>(mContext.getString(R.string.departure_query_time_label), getTime()));
         summary.add(new Pair<>(mContext.getString(R.string.departure_query_stop_label), getModel().getStop().getName()));
 
+        String lines = "";
+        if(getLineId() == ALL_LINES){
+            lines = mContext.getString(R.string.departure_query_all_lines);
+        } else {
+            lines = getModel().getLine().getLineName();
+        }
+
+        summary.add(new Pair<>(mContext.getString(R.string.vehicle_detail_line_label), lines));
+
         return summary;
     }
 

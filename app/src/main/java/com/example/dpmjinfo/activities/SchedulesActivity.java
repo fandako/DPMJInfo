@@ -10,7 +10,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,12 +21,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dpmjinfo.helpers.NetworkHelper;
+import com.example.dpmjinfo.helpers.OfflineFileDb;
 import com.example.dpmjinfo.queries.ActualDepartureQuery;
 import com.example.dpmjinfo.queries.ConnectionQuery;
 import com.example.dpmjinfo.queries.DepartureQuery;
@@ -35,11 +39,18 @@ import com.example.dpmjinfo.queries.FavouriteQuery;
 import com.example.dpmjinfo.queries.RSSQuery;
 import com.example.dpmjinfo.queries.ScheduleQuery;
 import com.example.dpmjinfo.spinnerHandling.ScheduleQuerySpinnerAdapter;
+import com.prof.rssparser.Article;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.TooManyListenersException;
 
 /**
@@ -60,6 +71,9 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
     ArrayList<String> missingFiles;
     TextView noInternetText;
     Button refreshButton;
+    RSSQuery rssQuery;
+    TextView newsCount;
+    ImageView newsCountBackground;
 
     static final int DOWNLOAD_REQUEST = 1;
 
@@ -80,6 +94,8 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
 
         scheduleQueries = new ArrayList<ScheduleQuery>();
         missingFiles = new ArrayList<>();
+
+        rssQuery = new RSSQuery(this);
 
         ScheduleQuerySpinnerAdapter scheduleQuerySpinnerAdapter = new ScheduleQuerySpinnerAdapter(this, scheduleQueries, R.layout.spinner_item_no_divider);
 
@@ -227,6 +243,9 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
             if(scheduleQuery.isInternetDependant() && !isNetworkAvailable()){
                 noInternetText.setVisibility(View.VISIBLE);
                 refreshButton.setVisibility(View.VISIBLE);
+                searchButton.setVisibility(View.GONE);
+                downloadText.setVisibility(View.GONE);
+                downloadButton.setVisibility(View.GONE);
                 return;
             }
 
@@ -384,6 +403,29 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
         // R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
         // If you don't have res/menu, just create a directory named "menu" inside res
         getMenuInflater().inflate(R.menu.schedule_activity_menu, menu);
+
+        MenuItem articlesItem = menu.findItem(R.id.action_articles);
+        View articlesItemView = articlesItem.getActionView();
+        articlesItemView.findViewById(R.id.newsIcon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(articlesItem);
+            }
+        });
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                newsCount = findViewById(R.id.newsCount);
+                newsCountBackground = findViewById(R.id.newsCountBackground);
+
+                if(isNetworkAvailable()) {
+                    //load articles to display new articles count in menu
+                    new Task(SchedulesActivity.this).execute(0);
+                }
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -410,14 +452,89 @@ public class SchedulesActivity extends AppCompatActivity implements OfflineFileM
 
         if (id == R.id.action_articles) {
             if(isNetworkAvailable()) {
-                RSSQuery q = new RSSQuery(this);
+                OfflineFileDb db = new OfflineFileDb(this);
 
-                q.execAndDisplayResult();
+                DateTime d = DateTime.now();
+                db.insertArticlesDate(d.toString("yyyy-MM-dd HH:mm:ss"));
+
+                newsCount.setVisibility(View.INVISIBLE);
+                newsCountBackground.setVisibility(View.INVISIBLE);
+
+                rssQuery.execAndDisplayResult();
             } else {
                 showConnectionErrorAlert();
             }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private List<?> loadArticles(){
+        //load and cache articles
+        rssQuery.setCacheResults(true);
+        List<Article> articles = rssQuery.exec(0);
+        //disable caching of further article queries
+        rssQuery.setCacheResults(false);
+
+        return articles;
+    }
+
+    private void onArticlesLoaded(List<?> articles){
+        int count = articles.size();
+
+        OfflineFileDb db = new OfflineFileDb(this);
+        String date = db.getArticlesDate();
+
+        if(!date.equals("")) {
+            count = 0;
+            DateTime currentArticlesDate = DateTime.parse(date, DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+
+            for (Object a : articles) {
+                Article art = (Article) a;
+
+                //Log.d("DBG", art.getPubDate());
+                //Log.d("DBG", currentArticlesDate.toString("dd MMM yyyy HH:mm:ss"));
+                DateTime d = DateTime.parse(art.getPubDate().subSequence(5, 25).toString(), DateTimeFormat.forPattern("dd MMM yyyy HH:mm:ss").withLocale(Locale.ENGLISH));
+
+                if(d.compareTo(currentArticlesDate) > 0){
+                    count++;
+                }
+            }
+        }
+
+        if(count != 0) {
+            newsCount.setText(String.format("%d", count));
+
+            newsCountBackground.setVisibility(View.VISIBLE);
+            newsCount.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private static class Task extends AsyncTask<Integer, Integer, List<?>> {
+
+        private WeakReference<SchedulesActivity> activityReference;
+
+        public Task(SchedulesActivity context) {
+            activityReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected List<?> doInBackground(Integer... ints) {
+
+            // get a reference to the activity if it is still there
+            SchedulesActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return new ArrayList<>();
+
+            return activity.loadArticles();
+        }
+
+        @Override
+        protected void onPostExecute(List<?> articles) {
+            // get a reference to the activity if it is still there
+            SchedulesActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
+            activity.onArticlesLoaded(articles);
+        }
     }
 }

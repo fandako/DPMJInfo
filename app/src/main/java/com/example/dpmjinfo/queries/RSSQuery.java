@@ -31,6 +31,8 @@ public class RSSQuery extends ScheduleQuery {
     private final Boolean lock = false;
     private final String url = "https://www.androidauthority.com/feed/";
     private boolean loaded;
+    private boolean cacheResults = false;
+    List<Article> cachedArticles = null;
 
     public RSSQuery(Context context) {
         super(context);
@@ -57,10 +59,21 @@ public class RSSQuery extends ScheduleQuery {
         return true;
     }
 
+    public void setCacheResults(boolean cacheResults) {
+        this.cacheResults = cacheResults;
+    }
+
     @Override
     public List<Article> exec(int page) {
         Parser parser = new Parser();
         List<Article> articles = new ArrayList<>();
+
+        if(cachedArticles != null){
+            articles.addAll(cachedArticles);
+            cachedArticles = null;
+
+            return articles;
+        }
 
         parser.onFinish(new OnTaskCompleted() {
             @Override
@@ -100,6 +113,11 @@ public class RSSQuery extends ScheduleQuery {
 
         for (Article a:articles) {
             Log.d("dbg", a.getTitle());
+        }
+
+        if (cacheResults) {
+            cachedArticles = new ArrayList<>();
+            cachedArticles.addAll(articles);
         }
 
         return articles;

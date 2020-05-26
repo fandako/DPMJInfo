@@ -51,7 +51,7 @@ public class MapFilterItemsAdapter extends RecyclerView.Adapter<MapFilterItemsAd
     @Override
     public void onBindViewHolder(MyViewHolder viewHolder, int i) {
         String data = lines.get(i);
-        viewHolder.checkedTextView.setText(data);
+        viewHolder.checkedTextView.setText(data.substring(6));
 
         if(checkedLines.contains(data)){
             viewHolder.checkedTextView.setChecked(true);

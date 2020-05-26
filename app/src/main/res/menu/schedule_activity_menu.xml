@@ -5,8 +5,9 @@
         android:id="@+id/action_articles"
         android:orderInCategory="200"
         app:showAsAction="always"
+        app:actionLayout="@layout/news_icon"
         android:icon="@drawable/info_icon2"
-        android:title="@string/map_icon_title"/>
+        android:title="@string/articles_title"/>
 
     <item
         android:id="@+id/action_map"
@@ -26,6 +27,6 @@
         android:id="@+id/action_settings"
         android:orderInCategory="200"
         app:showAsAction="always"
-        android:icon="@mipmap/settings_icon"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:title="@string/title_activity_settings"/>
 </menu>

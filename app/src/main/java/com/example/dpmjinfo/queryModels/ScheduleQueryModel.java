@@ -4,7 +4,7 @@ import com.example.dpmjinfo.queries.ScheduleQuery;
 
 import java.io.Serializable;
 
-public class ScheduleQueryModel implements Serializable {
+public class ScheduleQueryModel implements Serializable, Cloneable {
     protected boolean showAddToFavourite;
 
     public ScheduleQueryModel() {

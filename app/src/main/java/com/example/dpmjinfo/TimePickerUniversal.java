@@ -52,7 +52,7 @@ public class TimePickerUniversal implements View.OnFocusChangeListener, TimePick
         int hour = d.getHourOfDay();
         int minute = d.getMinuteOfHour();
 
-        new TimePickerDialog(view.getContext(), this, hour, minute, true).show();
+        new TimePickerDialog(view.getContext(),  this, hour, minute, true).show();
     }
 
     @Override

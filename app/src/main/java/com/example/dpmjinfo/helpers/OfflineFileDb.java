@@ -36,6 +36,9 @@ public class OfflineFileDb extends SQLiteOpenHelper {
     private static final String KEY_QUERY_TYPE = "queryClass";
     private static final String KEY_QUERY_MODEL = "queryModel";
 
+    private static final String TABLE_ARTICLE_DATE = "articleDate";
+    private static final String KEY_DATE = "date";
+
     public OfflineFileDb(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
@@ -45,11 +48,15 @@ public class OfflineFileDb extends SQLiteOpenHelper {
         String CREATE_TABLE = "CREATE TABLE " + TABLE_FILES + "("
                 + KEY_FILETYPE + " TEXT PRIMARY KEY," + KEY_PATH + " TEXT" + ")";
 
+        String ARTICLE_TABLE = "CREATE TABLE " + TABLE_ARTICLE_DATE + "("
+                + KEY_DATE + " TEXT)";
+
         String FAVOURITE_TABLE = "CREATE TABLE " + TABLE_FAVOURITE + "("
                 + KEY_QUERY_TYPE + " TEXT," + KEY_QUERY_MODEL + " BLOB" + ", PRIMARY KEY (" + KEY_QUERY_TYPE + ", " + KEY_QUERY_MODEL + "))";
 
         db.execSQL(CREATE_TABLE);
         db.execSQL(FAVOURITE_TABLE);
+        db.execSQL(ARTICLE_TABLE);
     }
 
     @Override
@@ -57,6 +64,7 @@ public class OfflineFileDb extends SQLiteOpenHelper {
         // Drop older table if exist
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVOURITE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ARTICLE_DATE);
         // Create tables again
         onCreate(db);
     }
@@ -67,8 +75,36 @@ public class OfflineFileDb extends SQLiteOpenHelper {
         // Drop older table if exist
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FILES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVOURITE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ARTICLE_DATE);
         // Create tables again
         onCreate(db);
+    }
+
+    public String getArticlesDate(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(TABLE_ARTICLE_DATE, new String[]{KEY_DATE},  null,  null, null, null, null, null);
+
+        if(!cursor.moveToNext()){
+            return "";
+        }
+
+        String date = cursor.getString(cursor.getColumnIndex(KEY_DATE));
+
+        cursor.close();
+
+        return date;
+    }
+
+    public long insertArticlesDate(String date){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        //delete previous articles date
+        db.delete(TABLE_ARTICLE_DATE, null, null);
+
+        ContentValues cValues = new ContentValues();
+        cValues.put(KEY_DATE, date);
+
+        return db.insertWithOnConflict(TABLE_ARTICLE_DATE, null, cValues, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     /**

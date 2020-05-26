@@ -5,15 +5,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dpmjinfo.R;
 import com.example.dpmjinfo.activities.DeparturesActivity;
+import com.example.dpmjinfo.helpers.NetworkHelper;
 import com.example.dpmjinfo.helpers.OfflineFileDb;
 import com.example.dpmjinfo.queryModels.ScheduleQueryModel;
 import com.example.dpmjinfo.recyclerViewHandling.BaseAdapter;
 import com.example.dpmjinfo.recyclerViewHandling.FavouriteAdapter;
 import com.example.dpmjinfo.recyclerViewHandling.RecycleViewClickListener;
+
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,15 +124,25 @@ public class FavouriteQuery extends ScheduleQuery {
         private void openDetail(int position) {
             ScheduleQuery query = adapter.getItem(position);
 
+            ScheduleQuery tempQuery = ScheduleQuery.getQueryFromSerializedModel(context, query.getClass().getSimpleName(), SerializationUtils.clone(query.getModel()));
+
+
             //init values that change with time like for example date for Departure and Connection queries
-            query.intiForFavourite();
+            tempQuery.intiForFavourite();
+
+            if(tempQuery.isInternetDependant()){
+                if(!NetworkHelper.isNetworkAvailable(mContext)){
+                    Toast.makeText(mContext, mContext.getString(R.string.no_internet_connection_alert_message), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
 
             Bundle bundle = new Bundle();
             Intent intent;
 
             intent = new Intent(mContext.getApplicationContext(), DeparturesActivity.class);
-            bundle.putSerializable("com.android.dpmjinfo.queryModel", query.getModel());
-            bundle.putSerializable("com.android.dpmjinfo.queryClass", query.getClass().getSimpleName());
+            bundle.putSerializable("com.android.dpmjinfo.queryModel", tempQuery.getModel());
+            bundle.putSerializable("com.android.dpmjinfo.queryClass", tempQuery.getClass().getSimpleName());
             intent.putExtras(bundle);
 
             //start given activity

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -34,12 +34,25 @@
         <item name="android:textColor">#808080</item>
     </style>
 
-    <style name="MyDatePicker" parent="android:Widget.Material.DatePicker">
-        <item name="android:datePickerMode">spinner</item>
+    <style name="MyDatePicker" parent="android:Widget.Material.Light.DatePicker">
+        <item name="android:datePickerMode">calendar</item>
+
+        <item name="android:headerBackground">#024DA8</item>
     </style>
 
-    <style name="MyTimePicker" parent="android:Widget.Material.TimePicker">
-        <item name="android:timePickerMode">spinner</item>
+    <style name="MyTimePicker" parent="android:Widget.Material.Light.TimePicker">
+        <item name="android:timePickerMode">clock</item>
+
+        <item name="android:headerBackground">#024DA8</item>
+        <item name="android:numbersTextColor">#483D3F</item>
+        <item name="android:numbersBackgroundColor">#FFFCF9</item>
+        <item name="android:numbersSelectorColor">#C9F0FF</item>
+
+        <item name="colorControlActivated">#483D3F</item>
+        <item name="colorAccent">#024DA8</item>
+        <item name="android:textColorPrimary">#483D3F</item>
+        <item name="android:textColorSecondary">#483D3F</item>
+        <item name="android:numbersInnerTextColor" tools:targetApi="m">#483D3F</item>
     </style>
 
     <style name="dialogTheme" parent="@style/Theme.AppCompat">
